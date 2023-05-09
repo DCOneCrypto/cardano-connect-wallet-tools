@@ -5,7 +5,6 @@ import { useEffect, useState } from 'react';
 // <Auth>{children}</Auth>
 
 export function useAuth() {
-	const [pointFirst, setPoint] = useState<number>(0)
 	const [name, setName] = useState<string>("")
 
 	useEffect(()=>{

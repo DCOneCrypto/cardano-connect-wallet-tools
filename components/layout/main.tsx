@@ -16,7 +16,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Stack from "@mui/material/Stack";
-import { useWallet } from "@meshsdk/react";
+import { useLovelace, useWallet } from "@meshsdk/react";
 import Tooltip from "@mui/material/Tooltip";
 import MenuItem from "@mui/material/MenuItem";
 import Avatar from '@mui/material/Avatar';
@@ -45,6 +45,7 @@ export function MainLayout({ children, window }: LayoutProps) {
   const [balance, setBalance] = React.useState<number>(0);
   const matches = useMediaQuery((theme: any) => theme.breakpoints.up('sm'));
   const { name, logout } = useAuth();
+  const lovelace = useLovelace();
   const router = useRouter()
   const handleClickMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -70,25 +71,23 @@ export function MainLayout({ children, window }: LayoutProps) {
   const getWallet = async () => {
     if (wallet && connected) {
       const ada = await wallet.getBalance()
-      const ares = await wallet.getRewardAddresses();
       const result = ada.find((obj: any) => {
         return obj.unit === "lovelace";
       });
       if (result) {
         setBalance(result.quantity / 1000000)
+        console.log(lovelace)
       }
     } else if (name) {
-      console.log("name------------", name)
       connect(name)
     }
   }
   const handleLogout = (
   ) => {
     logout();
-    console.log("handLogout-----")
     disconnect();
     setBalance(0);
-    
+
     router.push("/");
   };
 
@@ -125,152 +124,153 @@ export function MainLayout({ children, window }: LayoutProps) {
   const container = window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Auth>
-      <Box sx={{ display: 'flex', flexGrow: 1 }}>
-        <CssBaseline />
-        <AppBar
-          position="fixed"
-          color="transparent"
+    <Box sx={{ display: 'flex', flexGrow: 1 }}>
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        // color="transparent"
+        sx={{
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          ml: { sm: `${drawerWidth}px` },
+        }}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2, display: { sm: 'none' } }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, display: { sm: 'none' } }}>
+            <Link href="/">
+              UpdateGroupTools
+            </Link>
+          </Typography>
+          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1, display: { sm: 'block' } }} />
+          {matches &&
+            <Stack direction="row">
+              {
+                connected ? (
+                  <React.Fragment>
+                    <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
+                      <Tooltip title="Account settings">
+                        <Stack spacing={2} direction="row" alignItems="center">
+                          <Stack>
+                            <IconButton
+                              onClick={handleClickMenu}
+                              size="small"
+                              sx={{ ml: 2 }}
+                              aria-controls={openMenu ? 'account-menu' : undefined}
+                              aria-haspopup="true"
+                              aria-expanded={openMenu ? 'true' : undefined}
+                            >
+                              <Avatar sx={{ width: 32, height: 32 }} component={PersonIcon} />
+                            </IconButton>
+                          </Stack>
+                          <Stack sx={{ minWidth: 0 }}>
+                            <Typography noWrap>{balance.toLocaleString().split(".")[0]} ₳</Typography>
+                          </Stack>
+                        </Stack>
+                      </Tooltip>
+                    </Box>
+                    <Menu
+                      anchorEl={anchorEl}
+                      id="account-menu"
+                      open={openMenu}
+                      onClose={handleCloseMenu}
+                      onClick={handleCloseMenu}
+                      PaperProps={{
+                        elevation: 0,
+                        sx: {
+                          overflow: 'visible',
+                          filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+                          mt: 1.5,
+                          '& .MuiAvatar-root': {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          '&:before': {
+                            content: '""',
+                            display: 'block',
+                            position: 'absolute',
+                            top: 0,
+                            right: 14,
+                            width: 10,
+                            height: 10,
+                            bgcolor: 'background.paper',
+                            transform: 'translateY(-50%) rotate(45deg)',
+                            zIndex: 0,
+                          },
+                        },
+                      }}
+                      transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+                      anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+                    >
+                      <MenuItem onClick={handleLogout}>
+                        <ListItemIcon>
+                          <Logout fontSize="small" />
+                        </ListItemIcon>
+                        Hủy kết nối
+                      </MenuItem>
+                    </Menu>
+                  </React.Fragment>
+                ) :
+                  <Button variant="outlined" color="warning" sx={{ textTransform: "none" }} onClick={handOpen}>
+                    Connect wallet
+                  </Button>
+              }
+
+            </Stack>
+          }
+          <ModalWallet handleClose={handleClose} open={openModal} />
+        </Toolbar>
+      </AppBar>
+      <Box
+        component="nav"
+        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+        aria-label="mailbox folders"
+      >
+
+        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        <Drawer
+          container={container}
+          variant="temporary"
+          open={mobileOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{
+            keepMounted: true, // Better open performance on mobile.
+          }}
           sx={{
-            width: { sm: `calc(100% - ${drawerWidth}px)` },
-            ml: { sm: `${drawerWidth}px` },
+            display: { xs: 'block', sm: 'none' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
           }}
         >
-          <Toolbar>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={handleDrawerToggle}
-              sx={{ mr: 2, display: { sm: 'none' } }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-              <Link href="/">
-                UpdateGroupTools
-              </Link>
-            </Typography>
-            {matches &&
-              <Stack direction="row" spacing={1}>
-                {
-                  connected ? (
-                    <React.Fragment>
-                      <Box sx={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}>
-                        <Tooltip title="Account settings">
-                          <Stack spacing={2} direction="row" alignItems="center">
-                            <Stack>
-                              <IconButton
-                                onClick={handleClickMenu}
-                                size="small"
-                                sx={{ ml: 2 }}
-                                aria-controls={openMenu ? 'account-menu' : undefined}
-                                aria-haspopup="true"
-                                aria-expanded={openMenu ? 'true' : undefined}
-                              >
-                                <Avatar sx={{ width: 32, height: 32 }} component={PersonIcon} />
-                              </IconButton>
-                            </Stack>
-                            <Stack sx={{ minWidth: 0 }}>
-                              <Typography noWrap>{balance.toLocaleString().split(".")[0]} ₳</Typography>
-                            </Stack>
-                          </Stack>
-                        </Tooltip>
-                      </Box>
-                      <Menu
-                        anchorEl={anchorEl}
-                        id="account-menu"
-                        open={openMenu}
-                        onClose={handleCloseMenu}
-                        onClick={handleCloseMenu}
-                        PaperProps={{
-                          elevation: 0,
-                          sx: {
-                            overflow: 'visible',
-                            filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
-                            mt: 1.5,
-                            '& .MuiAvatar-root': {
-                              width: 32,
-                              height: 32,
-                              ml: -0.5,
-                              mr: 1,
-                            },
-                            '&:before': {
-                              content: '""',
-                              display: 'block',
-                              position: 'absolute',
-                              top: 0,
-                              right: 14,
-                              width: 10,
-                              height: 10,
-                              bgcolor: 'background.paper',
-                              transform: 'translateY(-50%) rotate(45deg)',
-                              zIndex: 0,
-                            },
-                          },
-                        }}
-                        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
-                        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-                      >
-                        <MenuItem onClick={handleLogout}>
-                          <ListItemIcon>
-                            <Logout fontSize="small" />
-                          </ListItemIcon>
-                          Hủy kết nối
-                        </MenuItem>
-                      </Menu>
-                    </React.Fragment>
-                  ) :
-                    <Button variant="contained" sx={{ textTransform: "none" }} onClick={handOpen}>
-                      Connect wallet
-                    </Button>
-                }
-
-              </Stack>
-            }
-            <ModalWallet handleClose={handleClose} open={openModal} />
-          </Toolbar>
-        </AppBar>
-        <Box
-          component="nav"
-          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-          aria-label="mailbox folders"
+          {drawer}
+        </Drawer>
+        <Drawer
+          variant="permanent"
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+          }}
+          open
         >
-          {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
-          <Drawer
-            container={container}
-            variant="temporary"
-            open={mobileOpen}
-            onClose={handleDrawerToggle}
-            ModalProps={{
-              keepMounted: true, // Better open performance on mobile.
-            }}
-            sx={{
-              display: { xs: 'block', sm: 'none' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-            }}
-          >
-            {drawer}
-          </Drawer>
-          <Drawer
-            variant="permanent"
-            sx={{
-              display: { xs: 'none', sm: 'block' },
-              '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-            }}
-            open
-          >
-            {drawer}
-          </Drawer>
-        </Box>
-        <Box
-          component="main"
-          sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
-        >
-          <Toolbar />
-          {children}
-        </Box>
+          <Typography variant="h6" noWrap component="div" sx={{ position: 'fixed', top: '18px', left: '30px' }}>UpdateGroupTools</Typography>
+          {drawer}
+        </Drawer>
       </Box>
-    </Auth>
+      <Box
+        component="main"
+        sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
+      >
+        <Toolbar />
+          {children}
+      </Box>
+    </Box>
   );
 }

@@ -2,17 +2,20 @@ import { useAuth } from "@/hooks";
 import { useWallet } from "@meshsdk/react";
 import { useRouter } from "next/router";
 import React, { useEffect } from "react";
+import { LocalStorage } from '@/models';
 
 interface AuthProps {
   children: any;
 }
 export function Auth({ children }: AuthProps) {
-  const {connected, connect} = useWallet();
+  const {connect} = useWallet();
   const router = useRouter();
-  const { name } = useAuth();
+  // const { name } = useAuth();
 
 
   useEffect(() => {
+    
+    const name = LocalStorage.accessNameWallet
     if (!name){
       router.push('/')
     }else{
