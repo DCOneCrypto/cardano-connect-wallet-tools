@@ -53,15 +53,23 @@ const Home: NextPageWithLayout = () => {
   const [inputFields, setInputFields] = useState<Array<Bundle>>([initBundle()])
   const [array_assets, setAssets] = useState<Array<Asset>>(new Array<Asset>)
   useEffect(() => {
-    refresh_assets()
-    getWallet()
-    console.log("conne---", connected)
+    if(wallet && connected){
+      refresh_assets()
+      getWallet()
+    }else{
+      setBalance(0)
+      handReset();
+      setAssets(new Array<Asset>)
+    }
+    console.log("change----", connected)
   }, [assets, wallet, connected])
 
   const refresh_assets = () => {
+    console.log("check----", assets)
     if (assets) {
       let arr: any[] = []
       assets.forEach((item: any) => {
+        console.log(item)
         arr.push({
           assetName: item.assetName,
           quantity: item.quantity,
@@ -203,9 +211,8 @@ const Home: NextPageWithLayout = () => {
     setInputFields([initBundle()])
     refresh_assets();
   }
-  const lovelace = useLovelace();
+  // const lovelace = useLovelace();
   const getWallet = async () => {
-    if (wallet && connected) {
       const ada = await wallet.getBalance()
       const result = ada.find((obj: any) => {
         return obj.unit === "lovelace";
@@ -213,7 +220,6 @@ const Home: NextPageWithLayout = () => {
       if (result) {
         setBalance(result.quantity / 1000000)
       }
-    }
   }
 
   const handSubmit = async () => {
@@ -230,7 +236,7 @@ const Home: NextPageWithLayout = () => {
           );
         }
         const nfts: Array<Nft> = recipient.nfts.filter(x => x.type === 'nft' && Number(x.balance) > 0)
-        if((adas && adas.length > 0) || (nfts && nfts.length>0)){
+        if ((adas && adas.length > 0) || (nfts && nfts.length > 0)) {
           is_valid = true
         }
         if (nfts && nfts.length > 0) {
@@ -246,14 +252,14 @@ const Home: NextPageWithLayout = () => {
         }
       }
       console.log(tx)
-      if(!is_valid){
+      if (!is_valid) {
         console.log("not found quantity")
         return
       }
       const unsignedTx = await tx.build();
       const signedTx = await wallet.signTx(unsignedTx);
       const txHash = await wallet.submitTx(signedTx);
-      if(txHash){
+      if (txHash) {
         handReset();
         window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
       }
@@ -272,7 +278,7 @@ const Home: NextPageWithLayout = () => {
           subheader="Gửi ada cho nhiều ví, token, nft"
         />
         <CardContent>
-          <AlertUpdateGroup show={!connected}/>
+          <AlertUpdateGroup show={!connected} />
           <Box
             component="form"
             autoComplete="off"
@@ -312,7 +318,7 @@ const Home: NextPageWithLayout = () => {
                                 height={100}
                               >
                                 <Item sx={{ overflow: 'hidden' }}>
-                                  <Button endIcon={<ArrowForwardIos />} onClick={() => handOpenModal(index, key)}>
+                                  <Button disabled={array_assets.length>0?false:true} endIcon={<ArrowForwardIos />} onClick={() => handOpenModal(index, key)}>
                                     <Typography variant="h5" noWrap>
                                       {value.type == 'nft' ? value.name : 'ada'}
                                     </Typography>
@@ -345,9 +351,11 @@ const Home: NextPageWithLayout = () => {
                         ))
                       }
                     </Grid>
-                    <Button variant="outlined" onClick={() => addNft(index)} sx={{ marginTop: 2, width: 250 }}>
-                      Add Token or Nft
-                    </Button>
+                    {
+                      array_assets.length > 0 && <Button variant="outlined" onClick={() => addNft(index)} sx={{ marginTop: 2, width: 250 }}>
+                        Add Token or Nft
+                      </Button>
+                    }
                   </CardContent>
 
                 </Card>
@@ -370,7 +378,7 @@ const Home: NextPageWithLayout = () => {
           }} >
           <Button variant="contained" size="large" sx={{ mr: 2 }} onClick={handReset}>Reset</Button>
           <Button variant="contained" size='large' onClick={handSubmit} disabled={
-            inputFields.filter(x => x.address === '').length > 0 ? true : false  && !connected
+            inputFields.filter(x => x.address === '').length > 0 ? true : false && !connected
           }>Submit</Button>
         </CardActions>
       </Card>

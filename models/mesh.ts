@@ -22,3 +22,7 @@ export interface PositionForm {
     parent: number,
     child: number
   }
+export interface Properies{
+  key: string,
+  value: string
+}

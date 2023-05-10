@@ -10,7 +10,7 @@ export function AlertUpdateGroup(prop: AlertUG) {
   return (
     <>
     {
-        show &&  <Alert severity="warning">Connect wallet for use!</Alert>
+        show &&  <Alert severity="warning">Connect your wallet and start exploring</Alert>
     }
     </>
   )

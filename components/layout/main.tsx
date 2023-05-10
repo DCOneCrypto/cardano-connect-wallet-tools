@@ -1,5 +1,5 @@
 //tsrpfc
-import { LayoutProps } from "@/models";
+import { LayoutProps, listMenu } from "@/models";
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -24,14 +24,11 @@ import Menu from '@mui/material/Menu';
 import PersonIcon from '@mui/icons-material/Person';
 import Button from "@mui/material/Button";
 import Logout from '@mui/icons-material/Logout';
-import ImageIcon from '@mui/icons-material/Image';
 import { Icon } from "@mui/material";
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import Link from "next/link";
 import { useAuth } from "@/hooks";
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { ModalWallet } from "../common/list-wallet";
-import { Auth } from "../common";
 import { useRouter } from "next/router";
 
 const drawerWidth = 240;
@@ -91,17 +88,6 @@ export function MainLayout({ children, window }: LayoutProps) {
     router.push("/");
   };
 
-  const listMenu = [
-    {
-      name: "Chuyển Token", link: "/send-token", icon: ArrowForwardIcon
-    },
-    {
-      name: "NFTs", link: "", icon: ImageIcon
-    },
-    {
-      name: "Lock", link: "", icon: ImageIcon
-    }
-  ]
   const drawer = (
     <div>
       <Toolbar />
