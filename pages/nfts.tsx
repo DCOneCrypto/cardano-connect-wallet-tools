@@ -1,23 +1,19 @@
-import { Asset, Bundle, NextPageWithLayout, Nft, PositionForm, Properies } from "@/models";
+import { NextPageWithLayout, Properies } from "@/models";
 import { MainLayout } from "components/layout";
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IconButton } from "@mui/material";
-import { AddOutlined, ArrowForwardIos, Delete } from "@mui/icons-material";
+import { AddOutlined} from "@mui/icons-material";
 import CardHeader from '@mui/material/CardHeader';
-import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
 import Stack from '@mui/material/Stack';
 import { styled } from '@mui/material/styles';
-import { useAssets, useLovelace, useWallet } from '@meshsdk/react';
-import { ModalTokenList } from "@/components/form";
-import Alert from '@mui/material/Alert';
+import { useWallet } from '@meshsdk/react';
 import { AlertUpdateGroup } from "@/components/common";
 import { Transaction, ForgeScript } from '@meshsdk/core';
 import type { Mint, AssetMetadata } from '@meshsdk/core';
@@ -25,23 +21,20 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import AddIcon from '@mui/icons-material/Add';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
-
-
-const Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-    boxShadow: 'none'
-}));
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 
 const Nfts: NextPageWithLayout = () => {
     const { connected, wallet, error, connect, disconnect } = useWallet();
     const [quantity, setQuantity] = useState<number>(1);
     const incrementCounter = () => setQuantity(quantity + 1);
+    const [name, setName] = useState<string>("")
+    const [description, setDescription] = useState<string>("")
+    const [file, setFile] = useState<File>()
+    const [loading, setLoading] = useState<boolean>(false)
     let decrementCounter = () => {
-        if(quantity>1) setQuantity(quantity - 1);
+        if (quantity > 1) setQuantity(quantity - 1);
     }
     const [properties, setProPerties] = useState<Array<Properies>>([
         {
@@ -53,8 +46,8 @@ const Nfts: NextPageWithLayout = () => {
     const handAddProperty = () => {
         let data = [...properties]
         data.push({
-            key:'',
-            value:''
+            key: '',
+            value: ''
         })
         setProPerties(data)
     }
@@ -62,46 +55,109 @@ const Nfts: NextPageWithLayout = () => {
         let data = [...properties];
         data.splice(index, 1)
         setProPerties(data)
-      }
+    }
 
+    const handleFormChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
+        let data = [...properties];
+        if (event.target.name === 'key') {
+            data[index].key = event.target.value;
+        } else {
+            data[index].value = event.target.value;
+        }
+        setProPerties(data);
+    }
+
+    const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0 && event.target.files[0]) {
+            setFile(event.target.files[0])
+        }
+    }
+
+    const handReset = () => {
+        setProPerties([
+            {
+                key: '',
+                value: ''
+            }
+        ])
+        setFile(undefined)
+        setQuantity(1)
+        setName('');
+        setDescription('');
+    }
+
+    const handleCloseLoading = () =>{
+        setLoading(false);
+    }
 
     const handMint = async () => {
-
-        // prepare forgingScript
         const usedAddress = await wallet.getUsedAddresses();
         const address = usedAddress[0];
         const forgingScript = ForgeScript.withOneSignature(address);
 
         const tx = new Transaction({ initiator: wallet });
 
+        let propety: any = {}
+        if (properties.length > 0) {
+            for (const item of properties) {
+                propety[item.key] = item.value
+            }
+        }
+        console.log(propety)
         // define asset#1 metadata
-        const assetMetadata1: AssetMetadata = [{
-            "name": "Mesh Token1",
-            "image": "ipfs://QmRzicpReutwCkM6aotuKjErFCUD213DpwPq6ByuzMJaua",
-            "mediaType": "image/jpg",
-            "description": "This NFT is minted by Mesh (https://meshjs.dev/)."
-        }, {
-            "name": "Mesh Token2",
-            "image": "ipfs://QmRzicpReutwCkM6aotuKjErFCUD213DpwPq6ByuzMJaua",
-            "mediaType": "image/jpg",
-            "description": "This NFT is minted by Mesh (https://meshjs.dev/)."
-        }];
+        if (file) {
+            const formData: FormData = new FormData();
+            formData.append('file', file)
+            setLoading(true)
+            try {
+                const response = await fetch("https://api.pinata.cloud/pinning/pinFileToIPFS", {
+                    method: 'POST',
+                    headers: {
+                        'pinata_api_key': `${process.env.NEXT_PUBLIC_API_KEY}`,
+                        'pinata_secret_api_key': `${process.env.NEXT_PUBLIC_API_SECRET}`,
+                        'Accept': 'application/json'
+                    },
+                    body: formData
+                })
+                const result = await response.json()
+                if (result && result["IpfsHash"]) {
+                    setLoading(false);
+                    propety["image"] = `ipfs://${result["IpfsHash"]}`
+                    propety["mediaType"] = file?.type
+                    
+                }
+            } catch (error) {
+                setLoading(false)
+            }
+        }
+        const assetMetadata: AssetMetadata = {
+            "name": name,
+            "description": description,
+            ...propety
+        };
         const asset1: Mint = {
-            assetName: 'MeshToken',
-            assetQuantity: '1',
-            metadata: assetMetadata1,
+            assetName: name,
+            assetQuantity: quantity.toString(),
+            metadata: assetMetadata,
             label: '721',
-            recipient: 'addr_test1qzhgsynvfl8rg0w2e4ffyuqp09u57n75syp98hkwrz2pvu7xeufqpvn0vv4zgnc8knhp68h68ax4hfvdm5denk3mdzkq6ksrun',
+            recipient: address
         };
         tx.mintAsset(
             forgingScript,
             asset1,
         );
 
-        const unsignedTx = await tx.build();
-        const signedTx = await wallet.signTx(unsignedTx);
-        const txHash = await wallet.submitTx(signedTx);
-        console.log(txHash)
+        try {
+            const unsignedTx = await tx.build();
+            const signedTx = await wallet.signTx(unsignedTx);
+            const txHash = await wallet.submitTx(signedTx);
+            if(txHash){
+                window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
+            }
+            console.log(txHash)
+        } catch (error) {
+            console.log("ERROR_MINT_NFT:", error)
+        }
     }
     return (
         <>
@@ -132,6 +188,10 @@ const Nfts: NextPageWithLayout = () => {
                                         label="Asset Name"
                                         fullWidth
                                         name="name"
+                                        value={name}
+                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                            setName(event.target.value)
+                                        }}
                                     />
                                     <TextField
                                         required
@@ -140,6 +200,10 @@ const Nfts: NextPageWithLayout = () => {
                                         multiline
                                         rows={4}
                                         name="description"
+                                        value={description}
+                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                                            setDescription(event.target.value)
+                                        }}
                                     />
 
                                     <Stack
@@ -158,16 +222,20 @@ const Nfts: NextPageWithLayout = () => {
 
                                     <Button variant="contained" component="label">
                                         Asset Image *
-                                        <input hidden accept="image/*" multiple type="file" />
+                                        <input hidden accept="image/*" multiple type="file" onChange={handleFile} />
                                     </Button>
 
                                     {
-                                        properties.map((value, index) => 
+                                        file && <Typography variant="caption">{file.name}</Typography>
+                                    }
+
+                                    {
+                                        properties.map((value, index) =>
                                             <Stack
                                                 direction="row"
                                                 justifyContent="flex-start"
                                                 alignItems="flex-start"
-                                                spacing={0}
+                                                spacing={1}
                                                 key={index}
                                             >
                                                 <TextField
@@ -177,6 +245,7 @@ const Nfts: NextPageWithLayout = () => {
                                                     helperText="Ex. Background"
                                                     name="key"
                                                     value={value.key}
+                                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFormChange(index, event)}
                                                 />
                                                 <TextField
                                                     label="Property Value"
@@ -184,10 +253,11 @@ const Nfts: NextPageWithLayout = () => {
                                                     size="small"
                                                     helperText="Ex. Yellow"
                                                     key="value"
-                                                    value={value.value  }
+                                                    value={value.value}
+                                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFormChange(index, event)}
                                                 />
 
-                                                <IconButton aria-label="delete" disabled={properties.length>1?false:true} onClick={()=>{removeFields(index)}}>
+                                                <IconButton aria-label="delete" disabled={properties.length > 1 ? false : true} onClick={() => { removeFields(index) }}>
                                                     <DeleteIcon />
                                                 </IconButton>
                                             </Stack>
@@ -203,21 +273,26 @@ const Nfts: NextPageWithLayout = () => {
 
                             </CardContent>
                             <CardActions sx={{ mb: 5 }}>
-                                <Button variant="contained" size="small" fullWidth >Reset</Button>
-                                <Button variant="contained" size='small' onClick={handMint} fullWidth>Submit</Button>
+                                <Button variant="contained" size="small" fullWidth onClick={handReset}>Reset</Button>
+                                <Button
+                                    disabled={!name || !description}
+                                    variant="contained" size='small' onClick={handMint} fullWidth>Submit</Button>
                             </CardActions>
                         </Card>
                     </Stack>
-
-
-
                 </CardContent>
 
             </Card>
-            {/* <ModalTokenList open={openModal} handleClose={handCloseModal} assets={array_assets} /> */}
-        </>
+            <Backdrop
+                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                open={loading}
+                onClick={handleCloseLoading}
+            >
+                <CircularProgress color="inherit" />
+                </Backdrop>
+            </>
 
-    );
+            );
 }
-Nfts.Layout = MainLayout
-export default Nfts
+            Nfts.Layout = MainLayout
+            export default Nfts

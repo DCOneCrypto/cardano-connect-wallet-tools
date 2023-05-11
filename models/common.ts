@@ -35,7 +35,7 @@ export type AppPropsWithLayout = AppProps & {
 
 export const listMenu = [
     {
-      name: "Chuyển Token", link: "", icon: ArrowForwardIcon
+      name: "Chuyển Token", link: "/", icon: ArrowForwardIcon
     },
     {
       name: "NFTs", link: "nfts", icon: ImageIcon
