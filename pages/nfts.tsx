@@ -1,36 +1,24 @@
 import { NextPageWithLayout, Properies } from "@/models";
 import { MainLayout } from "components/layout";
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
 import { useState } from "react";
-import { IconButton } from "@mui/material";
-import { AddOutlined} from "@mui/icons-material";
-import CardHeader from '@mui/material/CardHeader';
-import Paper from '@mui/material/Paper';
-import Stack from '@mui/material/Stack';
-import { styled } from '@mui/material/styles';
 import { useWallet } from '@meshsdk/react';
 import { AlertUpdateGroup } from "@/components/common";
 import { Transaction, ForgeScript } from '@meshsdk/core';
 import type { Mint, AssetMetadata } from '@meshsdk/core';
-import DeleteIcon from '@mui/icons-material/Delete';
-import ButtonGroup from '@mui/material/ButtonGroup';
-import AddIcon from '@mui/icons-material/Add';
-import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Col, Row } from 'antd';
+import { Card, Space } from 'antd';
+import { Button, Form, Input } from 'antd';
+import { Radio, Typography } from 'antd';
+import { UploadOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import type { UploadProps } from 'antd';
+import { Upload, Spin } from 'antd';
 
+const { Text } = Typography;
 
 const Nfts: NextPageWithLayout = () => {
     const { connected, wallet, error, connect, disconnect } = useWallet();
     const [quantity, setQuantity] = useState<number>(1);
     const incrementCounter = () => setQuantity(quantity + 1);
-    const [name, setName] = useState<string>("")
-    const [description, setDescription] = useState<string>("")
     const [file, setFile] = useState<File>()
     const [loading, setLoading] = useState<boolean>(false)
     let decrementCounter = () => {
@@ -82,28 +70,26 @@ const Nfts: NextPageWithLayout = () => {
         ])
         setFile(undefined)
         setQuantity(1)
-        setName('');
-        setDescription('');
     }
 
-    const handleCloseLoading = () =>{
+    const handleCloseLoading = () => {
         setLoading(false);
     }
 
-    const handMint = async () => {
+    const handMint = async (values: any) => {
         const usedAddress = await wallet.getUsedAddresses();
         const address = usedAddress[0];
         const forgingScript = ForgeScript.withOneSignature(address);
 
         const tx = new Transaction({ initiator: wallet });
 
-        let propety: any = {}
+        let property: any = {}
         if (properties.length > 0) {
             for (const item of properties) {
-                propety[item.key] = item.value
+                property[item.key] = item.value
             }
         }
-        console.log(propety)
+        console.log(property)
         // define asset#1 metadata
         if (file) {
             const formData: FormData = new FormData();
@@ -122,21 +108,22 @@ const Nfts: NextPageWithLayout = () => {
                 const result = await response.json()
                 if (result && result["IpfsHash"]) {
                     setLoading(false);
-                    propety["image"] = `ipfs://${result["IpfsHash"]}`
-                    propety["mediaType"] = file?.type
-                    
+                    property["image"] = `ipfs://${result["IpfsHash"]}`
+                    property["mediaType"] = file?.type
+
                 }
             } catch (error) {
                 setLoading(false)
             }
         }
+        setLoading(false);
         const assetMetadata: AssetMetadata = {
-            "name": name,
-            "description": description,
-            ...propety
+            "name": values.name,
+            "description": values.description,
+            ...property
         };
         const asset1: Mint = {
-            assetName: name,
+            assetName: values.name,
             assetQuantity: quantity.toString(),
             metadata: assetMetadata,
             label: '721',
@@ -151,7 +138,7 @@ const Nfts: NextPageWithLayout = () => {
             const unsignedTx = await tx.build();
             const signedTx = await wallet.signTx(unsignedTx);
             const txHash = await wallet.submitTx(signedTx);
-            if(txHash){
+            if (txHash) {
                 window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
             }
             console.log(txHash)
@@ -159,140 +146,104 @@ const Nfts: NextPageWithLayout = () => {
             console.log("ERROR_MINT_NFT:", error)
         }
     }
+
+    const props: UploadProps = {
+        beforeUpload(file) {
+            setFile(file)
+        },
+        // onChange(info: any) {
+        //     // setFile(info.file)
+        //     console.log(info, typeof(info.file))
+        // },
+    };
+
+    const onFinish = (values: any) => {
+        handMint(values)
+    };
+
     return (
-        <>
-            <Card variant="outlined" sx={{ border: 'none' }}>
-                <CardContent>
+        <><Spin spinning={loading} delay={500}>
+            <Row>
+                <Col span={12} offset={6}>
                     <AlertUpdateGroup show={!connected} />
-                    <Stack
-                        direction="row"
-                        justifyContent="center"
-                        alignItems="center"
-                        spacing={0}
-                    >
-                        <Card variant="outlined">
-                            <CardHeader
-                                title={<Typography variant="h4" component="div">
-                                    Mint Token
-                                </Typography>}
-                            />
-                            <CardContent>
-                                <Stack
-                                    direction="column"
-                                    justifyContent="flex-start"
-                                    alignItems="flex-start"
-                                    spacing={2}
-                                >
-                                    <TextField
-                                        required
-                                        label="Asset Name"
-                                        fullWidth
-                                        name="name"
-                                        value={name}
-                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                            setName(event.target.value)
-                                        }}
-                                    />
-                                    <TextField
-                                        required
-                                        label="Description"
-                                        fullWidth
-                                        multiline
-                                        rows={4}
-                                        name="description"
-                                        value={description}
-                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                                            setDescription(event.target.value)
-                                        }}
-                                    />
+                    <Card title="Mint token">
+                        <Form
+                            id="myForm"
+                            name="basic"
+                            onFinish={onFinish}
+                            // onFinishFailed={onFinishFailed}
+                            autoComplete="off"
+                        >
+                            <Form.Item
+                                name="name"
+                                rules={[{ required: true, message: 'Please input your asset name!' }]}
+                            >
+                                <Input placeholder="Asset Name *" />
+                            </Form.Item>
 
-                                    <Stack
-                                        direction="row"
-                                        justifyContent="space-between"
-                                        alignItems="center"
-                                        spacing={2}
-                                    >
-                                        <div>Quantity:</div>
-                                        <ButtonGroup size="small" aria-label="small button group">
-                                            <Button variant="outlined" size="small" onClick={decrementCounter}><HorizontalRuleIcon fontSize="small" /></Button>
-                                            <Button key="two" sx={{ fontWeight: "bold" }}>{quantity}</Button>
-                                            <Button variant="outlined" size="small" onClick={incrementCounter}><AddIcon fontSize="small" /></Button>
-                                        </ButtonGroup>
-                                    </Stack>
+                            <Form.Item name="description">
+                                <Input.TextArea placeholder="Description" />
+                            </Form.Item>
 
-                                    <Button variant="contained" component="label">
-                                        Asset Image *
-                                        <input hidden accept="image/*" multiple type="file" onChange={handleFile} />
-                                    </Button>
+                            <Space direction="vertical" size="large">
+                                <Space>
+                                    <Text>Quantity: </Text>
+                                    <Radio.Group>
+                                        <Radio.Button onClick={decrementCounter}>-</Radio.Button>
+                                        <Radio.Button disabled>
+                                            {quantity}
+                                        </Radio.Button>
+                                        <Radio.Button onClick={incrementCounter}>+</Radio.Button>
+                                    </Radio.Group>
+                                </Space>
 
-                                    {
-                                        file && <Typography variant="caption">{file.name}</Typography>
-                                    }
+                                <Space direction="vertical">
+                                    <Upload {...props} maxCount={1}>
+                                        <Button icon={<UploadOutlined />}>Asset Image *</Button>
+                                    </Upload>
+                                </Space>
 
-                                    {
-                                        properties.map((value, index) =>
-                                            <Stack
-                                                direction="row"
-                                                justifyContent="flex-start"
-                                                alignItems="flex-start"
-                                                spacing={1}
-                                                key={index}
-                                            >
-                                                <TextField
-                                                    label="Property Name"
-                                                    fullWidth
-                                                    size="small"
-                                                    helperText="Ex. Background"
-                                                    name="key"
-                                                    value={value.key}
-                                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFormChange(index, event)}
-                                                />
-                                                <TextField
-                                                    label="Property Value"
-                                                    fullWidth
-                                                    size="small"
-                                                    helperText="Ex. Yellow"
-                                                    key="value"
-                                                    value={value.value}
-                                                    onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFormChange(index, event)}
-                                                />
-
-                                                <IconButton aria-label="delete" disabled={properties.length > 1 ? false : true} onClick={() => { removeFields(index) }}>
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </Stack>
-                                        )
-                                    }
-
-                                    <Button variant="outlined" endIcon={<AddOutlined />} sx={{ width: '100%', marginTop: 3 }} onClick={handAddProperty}>
-                                        Add Property
-                                    </Button>
-                                </Stack>
+                            </Space>
 
 
+                        </Form>
 
-                            </CardContent>
-                            <CardActions sx={{ mb: 5 }}>
-                                <Button variant="contained" size="small" fullWidth onClick={handReset}>Reset</Button>
-                                <Button
-                                    disabled={!name || !description}
-                                    variant="contained" size='small' onClick={handMint} fullWidth>Submit</Button>
-                            </CardActions>
-                        </Card>
-                    </Stack>
-                </CardContent>
+                        {
+                            properties.map((value, index) =>
+                                <Row gutter={16} style={{ marginTop: '10px' }} key={index}>
+                                    <Col span={11}>
+                                        <Input name="key" placeholder="Property Name" value={value.key}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFormChange(index, event)} />
+                                    </Col>
+                                    <Col span={11}>
+                                        <Input name="value" placeholder="Property Value" value={value.value}
+                                            onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFormChange(index, event)} />
+                                    </Col>
+                                    <Col span={2}><Button danger icon={<DeleteOutlined />} disabled={properties.length > 1 ? false : true} onClick={() => { removeFields(index) }}></Button></Col>
+                                </Row>
 
-            </Card>
-            <Backdrop
-                sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                open={loading}
-                onClick={handleCloseLoading}
-            >
-                <CircularProgress color="inherit" />
-                </Backdrop>
-            </>
+                            )}
 
-            );
+                        <Row gutter={[16, 20]} style={{ marginTop: '20px' }}>
+                            <Col span={24}>
+                                <Button block onClick={handAddProperty}>Add Property <PlusOutlined /></Button>
+                            </Col>
+                            <Col span={12}>
+                                <Button block onClick={handReset}>Reset</Button>
+                            </Col>
+                            <Col span={12}>
+                                <Button type="primary" htmlType="submit" block form="myForm" disabled={!connected}>
+                                    Submit
+                                </Button>
+                            </Col>
+                        </Row>
+                    </Card>
+                </Col>
+            </Row>
+        </Spin>
+        </>
+
+    );
 }
-            Nfts.Layout = MainLayout
-            export default Nfts
+Nfts.Layout = MainLayout
+export default Nfts

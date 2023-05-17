@@ -1,6 +1,5 @@
 import { useAuth } from '@/hooks';
 import { LayoutProps } from '@/models';
-import { Button } from '@mui/material';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
@@ -23,7 +22,6 @@ export function AdminLayout({children}: LayoutProps) {
     <Auth>
         <div>Admin</div>
 
-        <Button onClick={handleLogoutClick}>Logoout</Button>
 
         {/* <div>{JSON.stringify(profile)}</div> */}
 

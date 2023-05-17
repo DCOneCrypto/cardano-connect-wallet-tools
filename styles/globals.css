@@ -17,3 +17,48 @@
     background-color: rgb(17 24 39);
     color: rgb(241 245 249);
 } */
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+.logo {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.header-ant-design {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+  position: fixed;
+  top: 0;
+  z-index: 1;
+  width: 100%;
+  padding: 0
+}
+
+.ant-list-item:hover {
+  box-shadow: 1px 0 0 4px rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  /* background-color: lightgray; */
+}
+
+.ant-card-box-up .ant-card-body {
+  padding: 16px !important;
+}
+
+.ant-card-box-up .ant-input-number {
+  width: 100%;
+}
+
+.ant-card-box-up .ant-form-item-explain-error {
+  font-size: 13px;
+}
