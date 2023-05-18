@@ -1,7 +1,7 @@
 import { NextPageWithLayout, Properies } from "@/models";
 import { MainLayout } from "components/layout";
 import { useState } from "react";
-import { CardanoWallet, useWallet } from '@meshsdk/react';
+import { useWallet } from '@meshsdk/react';
 import { AlertUpdateGroup } from "@/components/common";
 import { Transaction, ForgeScript } from '@meshsdk/core';
 import type { Mint, AssetMetadata } from '@meshsdk/core';
