@@ -1,7 +1,7 @@
 import { NextPageWithLayout, Properies } from "@/models";
 import { MainLayout } from "components/layout";
 import { useState } from "react";
-import { useWallet } from '@meshsdk/react';
+import { CardanoWallet, useWallet } from '@meshsdk/react';
 import { AlertUpdateGroup } from "@/components/common";
 import { Transaction, ForgeScript } from '@meshsdk/core';
 import type { Mint, AssetMetadata } from '@meshsdk/core';
@@ -15,7 +15,7 @@ import { Upload, Spin } from 'antd';
 
 const { Text } = Typography;
 
-const Nfts: NextPageWithLayout = () => {
+const Mint: NextPageWithLayout = () => {
     const { connected, wallet, error, connect, disconnect } = useWallet();
     const [quantity, setQuantity] = useState<number>(1);
     const incrementCounter = () => setQuantity(quantity + 1);
@@ -83,12 +83,15 @@ const Nfts: NextPageWithLayout = () => {
 
         const tx = new Transaction({ initiator: wallet });
 
-        let property: any = {}
+        let property: any = {
+            minBy: "https://github.com/tranquoc113"
+        }
         if (properties.length > 0) {
             for (const item of properties) {
                 property[item.key] = item.value
             }
         }
+
         console.log(property)
         // define asset#1 metadata
         if (file) {
@@ -109,7 +112,8 @@ const Nfts: NextPageWithLayout = () => {
                 if (result && result["IpfsHash"]) {
                     setLoading(false);
                     property["image"] = `ipfs://${result["IpfsHash"]}`
-                    property["mediaType"] = file?.type
+                    // property["mediaType"] = "image/jpeg"
+                    // console.log(file)
 
                 }
             } catch (error) {
@@ -241,9 +245,10 @@ const Nfts: NextPageWithLayout = () => {
                 </Col>
             </Row>
         </Spin>
+
         </>
 
     );
 }
-Nfts.Layout = MainLayout
-export default Nfts
+Mint.Layout = MainLayout
+export default Mint

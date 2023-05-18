@@ -21,7 +21,7 @@ export const listMenu = [
       name: "Send", link: "/", icon: ArrowRightOutlined
     },
     {
-      name: "NFTs", link: "/nfts", icon: FileImageOutlined
+      name: "NFTs", link: "/burn", icon: FileImageOutlined
     },
     {
       name: "Lock", link: "/lock", icon: UnlockOutlined

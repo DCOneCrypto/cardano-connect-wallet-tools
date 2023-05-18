@@ -1,7 +1,8 @@
 export interface Asset{
     assetName: string,
     quantity: number,
-    unit: string
+    unit: string,
+    id?: number
 }
 export interface Nft {
     type: 'ada' | 'nft',
