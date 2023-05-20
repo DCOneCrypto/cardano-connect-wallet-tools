@@ -1,4 +1,4 @@
-import { Asset, Bundle, NextPageWithLayout, Nft, PositionForm } from "@/models";
+import { Asset, Bundle, NextPageWithLayout, Nft, PositionForm, redirect_scan } from "@/models";
 import { MainLayout } from "components/layout";
 import React from 'react';
 import { Card, Space } from 'antd';
@@ -257,7 +257,8 @@ const Home: NextPageWithLayout = () => {
       const txHash = await wallet.submitTx(signedTx);
       if (txHash) {
         handReset();
-        window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
+        redirect_scan(txHash, inputFields[0].address)
+        // window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
       }
       console.log(txHash)
     } catch (error) {

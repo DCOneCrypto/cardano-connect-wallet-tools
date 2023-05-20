@@ -3,6 +3,7 @@ import { useAssets, useWallet } from '@meshsdk/react';
 import { Button, Form, Input, InputNumber, Modal, Radio } from 'antd';
 import { Transaction, ForgeScript } from '@meshsdk/core';
 import type { Asset } from '@meshsdk/core';
+import { redirect_scan } from '@/models';
 
 
 
@@ -53,7 +54,8 @@ export function ModalBurnToken(props: Prop) {
         const txHash = await wallet.submitTx(signedTx);
         console.log(txHash)
         if (txHash) {
-            window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
+            redirect_scan(txHash, address)
+            // window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
             handleClose();
         }
         } catch (error) {

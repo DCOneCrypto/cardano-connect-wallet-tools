@@ -38,7 +38,7 @@ body {
 
 .header-ant-design {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
-  position: fixed;
+  /* position: fixed; */
   top: 0;
   z-index: 1;
   width: 100%;
@@ -61,4 +61,14 @@ body {
 
 .ant-card-box-up .ant-form-item-explain-error {
   font-size: 13px;
+}
+
+#form-mint-token .ant-input-number-input{
+  text-align: center;
+  font-weight: bold;
+  font-size: 18px;
+  color: red
+}
+.ant-dropdown-menu-item{
+  padding: 10px 16px !important;
 }

@@ -67,23 +67,20 @@ export function HeaderLayout() {
     return (
         <>
             <Header style={{ background: colorBgContainer }} className="header-ant-design">
-                <Row justify="end">
+                <div style={{ textAlign: 'right' }}>
                     {
                         connected ?
-                            <Col span={4} >
-                                <Dropdown menu={{ items }} trigger={['click']}>
-                                    <a onClick={(e) => e.preventDefault()}>
-                                        <Space>
-                                            <Avatar shape="square" style={{ backgroundColor: colorPrimary }}>A</Avatar>
-                                        </Space>
-                                    </a>
-                                </Dropdown>
-                            </Col> :
-                            <Col span={4} style={{ marginInlineEnd: '74px' }}>
-                                <Button type="primary" onClick={handOpen}>Connect Wallet</Button>
-                            </Col>
+                            <Dropdown menu={{ items }} trigger={['click']}>
+                                <a onClick={(e) => e.preventDefault()}>
+                                    <Space>
+                                        <Avatar shape="square" style={{ backgroundColor: colorPrimary }}>A</Avatar>
+                                    </Space>
+                                </a>
+                            </Dropdown>
+                            :
+                            <Button type="primary" onClick={handOpen}>Connect Wallet</Button>
                     }
-                </Row>
+                </div>
             </Header>
             <ModalWallet handleClose={handleClose} open={openModal} />
         </>

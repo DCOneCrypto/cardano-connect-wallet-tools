@@ -1,4 +1,4 @@
-import { NextPageWithLayout, Properies } from "@/models";
+import { NextPageWithLayout, Properies, TypeToken, redirect_scan } from "@/models";
 import { MainLayout } from "components/layout";
 import { useState } from "react";
 import { useWallet } from '@meshsdk/react';
@@ -9,9 +9,9 @@ import { Col, Row } from 'antd';
 import { Card, Space } from 'antd';
 import { Button, Form, Input } from 'antd';
 import { Radio, Typography } from 'antd';
-import { UploadOutlined, DeleteOutlined, PlusOutlined } from '@ant-design/icons';
+import { UploadOutlined, DeleteOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
-import { Upload, Spin } from 'antd';
+import { Upload, Spin, InputNumber } from 'antd';
 
 const { Text } = Typography;
 
@@ -86,10 +86,12 @@ const Mint: NextPageWithLayout = () => {
         let property: any = {
             minBy: "https://github.com/tranquoc113"
         }
-        if (properties.length > 0) {
-            for (const item of properties) {
-                property[item.key] = item.value
+
+        for (const item of properties) {
+            if (!item.key) {
+                continue
             }
+            property[item.key] = item.value
         }
 
         console.log(property)
@@ -130,7 +132,7 @@ const Mint: NextPageWithLayout = () => {
             assetName: values.name,
             assetQuantity: quantity.toString(),
             metadata: assetMetadata,
-            label: '721',
+            label: values.type_token,
             recipient: address
         };
         tx.mintAsset(
@@ -143,7 +145,8 @@ const Mint: NextPageWithLayout = () => {
             const signedTx = await wallet.signTx(unsignedTx);
             const txHash = await wallet.submitTx(signedTx);
             if (txHash) {
-                window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
+                redirect_scan(txHash, address)
+                // window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
             }
             console.log(txHash)
         } catch (error) {
@@ -167,8 +170,9 @@ const Mint: NextPageWithLayout = () => {
 
     return (
         <><Spin spinning={loading} delay={500}>
-            <Row>
-                <Col span={12} offset={6}>
+
+            <Row justify="center" id="form-mint-token">
+                <Col xs={24} sm={12} >
                     <AlertUpdateGroup show={!connected} />
                     <Card title="Mint token">
                         <Form
@@ -177,6 +181,7 @@ const Mint: NextPageWithLayout = () => {
                             onFinish={onFinish}
                             // onFinishFailed={onFinishFailed}
                             autoComplete="off"
+                            initialValues={{ type_token: '721' }}
                         >
                             <Form.Item
                                 name="name"
@@ -189,16 +194,24 @@ const Mint: NextPageWithLayout = () => {
                                 <Input.TextArea placeholder="Description" />
                             </Form.Item>
 
+                            <Form.Item name="type_token">
+                                <Radio.Group>
+                                    <Radio value="721"> Non fungible asset (721) </Radio>
+                                    <Radio value="20"> Fungible asset (20) </Radio>
+                                </Radio.Group>
+                            </Form.Item>
+
                             <Space direction="vertical" size="large">
                                 <Space>
                                     <Text>Quantity: </Text>
-                                    <Radio.Group>
-                                        <Radio.Button onClick={decrementCounter}>-</Radio.Button>
-                                        <Radio.Button disabled>
-                                            {quantity}
-                                        </Radio.Button>
-                                        <Radio.Button onClick={incrementCounter}>+</Radio.Button>
-                                    </Radio.Group>
+                                    <InputNumber
+                                        disabled
+                                        addonBefore={<Button onClick={decrementCounter} type="link" icon={<MinusOutlined />} />}
+                                        addonAfter={<Button onClick={incrementCounter} type="link" icon={<PlusOutlined />} />}
+                                        value={quantity}
+                                        style={{ textAlign: 'center', fontWeight: 'bold' }}
+                                    />
+
                                 </Space>
 
                                 <Space direction="vertical">

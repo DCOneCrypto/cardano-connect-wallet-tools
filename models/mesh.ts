@@ -27,3 +27,4 @@ export interface Properies{
   key: string,
   value: string
 }
+export type TypeToken = "721" | '20'

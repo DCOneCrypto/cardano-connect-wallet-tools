@@ -22,6 +22,7 @@ export function NavigationLayout() {
 
     return (
         <Sider
+            style={{minHeight: '100vh'}}
             breakpoint="lg"
             collapsedWidth="0"
             onBreakpoint={(broken) => {

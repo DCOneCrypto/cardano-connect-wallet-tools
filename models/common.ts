@@ -22,8 +22,13 @@ export const listMenu = [
     },
     {
       name: "NFTs", link: "/burn", icon: FileImageOutlined
-    },
-    {
-      name: "Lock", link: "/lock", icon: UnlockOutlined
     }
   ]
+
+export function redirect_scan(txHash: string, address: string){
+  if(address.includes("addr_test")){
+    window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
+  }else{
+    window.open(`https://cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
+  }
+}
