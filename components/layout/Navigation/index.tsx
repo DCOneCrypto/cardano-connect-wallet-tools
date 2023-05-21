@@ -18,7 +18,7 @@ export function NavigationLayout() {
         if (index != -1) {
             console.log(index)
             setSelectMenu((index + 1).toString())
-        }else if(pathname === "/burn"){
+        }else if(pathname === "/mint"){
             setSelectMenu("1")
         }
     }, [router])

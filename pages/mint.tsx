@@ -139,7 +139,7 @@ const Mint: NextPageWithLayout = () => {
         };
         console.log("ro----", royalty, process.env.NEXT_PUBLIC_ADDRESS)
         
-        if (!royalty) {
+        if (royalty) {
             tx.sendLovelace(
                 `${process.env.NEXT_PUBLIC_ADDRESS}`,
                 `${process.env.NEXT_PUBLIC_COST_PRICE}000000`
