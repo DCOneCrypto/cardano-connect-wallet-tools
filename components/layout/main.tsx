@@ -30,6 +30,8 @@ export function MainLayout({ children }: LayoutProps) {
     if (index != -1) {
       console.log(index)
       setSelectMenu((index + 1).toString())
+    }else if(pathname == "/mint"){
+      setSelectMenu("1")
     }
   }, [router])
 

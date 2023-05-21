@@ -137,6 +137,7 @@ const Mint: NextPageWithLayout = () => {
             label: values.type_token,
             recipient: address
         };
+        console.log("ro----", royalty, process.env.NEXT_PUBLIC_ADDRESS)
         
         if (!royalty) {
             tx.sendLovelace(
