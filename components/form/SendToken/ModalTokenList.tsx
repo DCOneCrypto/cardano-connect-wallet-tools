@@ -1,27 +1,9 @@
-import { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
-import { useAssets } from '@meshsdk/react';
 import { Asset } from '@/models';
+import type { ColumnsType } from 'antd/es/table';
+import { Button } from 'antd';
+import { Modal, Table } from 'antd';
 
 
-const style = {
-    position: 'absolute' as 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    boxShadow: 24,
-    p: 4,
-};
 
 
 interface Prop {
@@ -30,59 +12,49 @@ interface Prop {
     assets: Array<Asset>
 
 }
+
+// const ModalTokenList: React.FC<Prop> = (props: Prop) =>{
 export function ModalTokenList(props: Prop) {
     const { open, handleClose, assets } = props;
+    console.log(assets)
 
-    const handleClick = (index: number) =>{
-        handleClose(assets[index]);
-    }
-
+    const columns: ColumnsType<any> = [
+        {
+            title: 'Ordinal',
+            dataIndex: 'assetName',
+            key: 'assetName',
+            render: (_, record, index) => (
+                <span>{index+1}</span>
+            )
+        },
+        {
+            title: 'Asset Name',
+            dataIndex: 'assetName',
+            key: 'assetName',
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            key: 'quantity',
+        },
+        {
+            title: 'Action',
+            key: 'action',
+            render: (_, record) => (
+                <Button type="primary" size="middle" onClick={() => { handleClose(record) }}>Select</Button>
+            )
+        },
+    ];
 
     return (
         <Modal
             open={open}
-            onClose={handleClose}
-            aria-labelledby="modal-modal-title"
-            aria-describedby="modal-modal-description"
+            title="List token & Nfts"
+            footer={null}
+            onCancel={handleClose}
         >
-            <Box sx={style}>
-                <Typography variant="h6" component="h2">
-                    Danh sách token
-                </Typography>
-
-                <TableContainer component={Paper} sx={{mt:5}}>
-                    <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                            <TableRow>
-                                <TableCell>STT</TableCell>
-                                <TableCell align="left" >Tên</TableCell>
-                                <TableCell align="right">Số lượng</TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                           {
-                            assets && assets.map((value, index)=>{
-                                return (
-                                    <TableRow
-                                    sx={{ '&:last-child td, &:last-child th': { border: 0 }, cursor: 'pointer' }}
-                                    key={index}
-                                    onClick={(event) => handleClick(index)}
-                                >
-                                    <TableCell component="th" scope="row">
-                                        {index+1}
-                                    </TableCell>
-                                    <TableCell>{value.assetName}</TableCell>
-                                    <TableCell align="right">{value.quantity}</TableCell>
-    
-                                </TableRow>
-                                )
-                            })
-                           }
-                        </TableBody>
-                    </Table>
-                </TableContainer>
-
-            </Box>
+           <Table style={{marginTop: "20px"}} rowKey="unit" columns={columns} dataSource={assets} pagination={false}/>
         </Modal>
     );
 }
+// export default ModalTokenList

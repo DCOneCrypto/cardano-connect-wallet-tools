@@ -42,7 +42,7 @@ const Burn: NextPageWithLayout = () => {
             title: 'Action',
             key: 'action',
             render: (_, record) => (
-                <Button size="middle" onClick={()=>{handRow(record)}}>
+                <Button danger size="middle" onClick={()=>{handRow(record)}}>
                     Burn
                 </Button>
             ),
@@ -56,7 +56,7 @@ const Burn: NextPageWithLayout = () => {
                 {
                     !connected && <Col span={24}><AlertUpdateGroup show={!connected} /></Col>
                 }
-                <Col span={24}>
+                <Col span={24} style={{textAlign:'right'}}>
                 <Button href="/mint" type="primary">Mint Token</Button>
                 </Col>
                 <Col span={24}>

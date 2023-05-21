@@ -1,10 +1,11 @@
 
-import { Layout, Menu } from 'antd';
+import { Layout, Menu, Avatar } from 'antd';
 import { listMenu } from "@/models";
 import React, { useEffect, useState } from 'react';
 import Link from "next/link";
 import { useRouter } from 'next/router';
 const { Sider } = Layout;
+
 
 export function NavigationLayout() {
     const router = useRouter();
@@ -17,6 +18,8 @@ export function NavigationLayout() {
         if (index != -1) {
             console.log(index)
             setSelectMenu((index + 1).toString())
+        }else if(pathname === "/burn"){
+            setSelectMenu("1")
         }
     }, [router])
 
@@ -32,7 +35,10 @@ export function NavigationLayout() {
                 console.log(collapsed, type);
             }}
         >
-            <div className="logo" />
+            <div className="logo">
+            <Avatar src={<img src="/img/Cardano_Logo.svg" alt="avatar" />} />
+             <span style={{marginLeft: '10px'}}>Cardano</span>
+            </div>
             <Menu
                 theme="dark"
                 mode="inline"

@@ -33,16 +33,20 @@ body {
 .logo {
   height: 32px;
   margin: 16px;
-  background: rgba(255, 255, 255, 0.2);
+  color: whitesmoke;
+  font-weight: bold;
+  /* background: rgba(255, 255, 255, 0.2); */
+  /* background-image: url("https://cardano.vn/img/Cardano_Logo.svg"); */
 }
 
 .header-ant-design {
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.03), 0 1px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px 0 rgba(0, 0, 0, 0.02);
+  text-align: right;
   /* position: fixed; */
-  top: 0;
+  /* top: 0;
   z-index: 1;
   width: 100%;
-  padding: 0
+  padding: 0 */
 }
 
 .ant-list-item:hover {
@@ -63,12 +67,12 @@ body {
   font-size: 13px;
 }
 
-#form-mint-token .ant-input-number-input{
+/* #form-mint-token .ant-input-number-input{
   text-align: center;
   font-weight: bold;
   font-size: 18px;
   color: red
-}
+} */
 .ant-dropdown-menu-item{
   padding: 10px 16px !important;
 }

@@ -25,6 +25,7 @@ export interface PositionForm {
   }
 export interface Properies{
   key: string,
-  value: string
+  value: string,
+  disable?: boolean
 }
 export type TypeToken = "721" | '20'

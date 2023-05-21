@@ -1,4 +1,4 @@
-import { NextPageWithLayout, Properies, TypeToken, redirect_scan } from "@/models";
+import { NextPageWithLayout, Properies, redirect_scan } from "@/models";
 import { MainLayout } from "components/layout";
 import { useState } from "react";
 import { useWallet } from '@meshsdk/react';
@@ -8,15 +8,15 @@ import type { Mint, AssetMetadata } from '@meshsdk/core';
 import { Col, Row } from 'antd';
 import { Card, Space } from 'antd';
 import { Button, Form, Input } from 'antd';
-import { Radio, Typography } from 'antd';
-import { UploadOutlined, DeleteOutlined, PlusOutlined, MinusOutlined } from '@ant-design/icons';
+import { Radio, Switch, Typography, Tooltip } from 'antd';
+import { UploadOutlined, DeleteOutlined, PlusOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Upload, Spin, InputNumber } from 'antd';
+const { Text } = Typography
 
-const { Text } = Typography;
 
 const Mint: NextPageWithLayout = () => {
-    const { connected, wallet, error, connect, disconnect } = useWallet();
+    const { connected, wallet } = useWallet();
     const [quantity, setQuantity] = useState<number>(1);
     const incrementCounter = () => setQuantity(quantity + 1);
     const [file, setFile] = useState<File>()
@@ -24,10 +24,13 @@ const Mint: NextPageWithLayout = () => {
     let decrementCounter = () => {
         if (quantity > 1) setQuantity(quantity - 1);
     }
+    const [royalty, setRoyalty] = useState<boolean>(false)
+
     const [properties, setProPerties] = useState<Array<Properies>>([
         {
-            key: '',
-            value: ''
+            key: 'MinBy',
+            value: 'DCone',
+            disable: true
         }
     ])
 
@@ -55,17 +58,17 @@ const Mint: NextPageWithLayout = () => {
         setProPerties(data);
     }
 
-    const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files.length > 0 && event.target.files[0]) {
-            setFile(event.target.files[0])
-        }
-    }
+    // const handleFile = (event: React.ChangeEvent<HTMLInputElement>) => {
+    //     if (event.target.files && event.target.files.length > 0 && event.target.files[0]) {
+    //         setFile(event.target.files[0])
+    //     }
+    // }
 
     const handReset = () => {
         setProPerties([
             {
-                key: '',
-                value: ''
+                key: 'MinBy',
+                value: 'DCOne'
             }
         ])
         setFile(undefined)
@@ -77,15 +80,14 @@ const Mint: NextPageWithLayout = () => {
     }
 
     const handMint = async (values: any) => {
+        console.log(values)
         const usedAddress = await wallet.getUsedAddresses();
         const address = usedAddress[0];
         const forgingScript = ForgeScript.withOneSignature(address);
 
         const tx = new Transaction({ initiator: wallet });
 
-        let property: any = {
-            minBy: "https://github.com/tranquoc113"
-        }
+        let property: any = {}
 
         for (const item of properties) {
             if (!item.key) {
@@ -130,16 +132,26 @@ const Mint: NextPageWithLayout = () => {
         };
         const asset1: Mint = {
             assetName: values.name,
-            assetQuantity: quantity.toString(),
+            assetQuantity: values.quantity.toString(),
             metadata: assetMetadata,
             label: values.type_token,
             recipient: address
         };
+        
+        if (!royalty) {
+            tx.sendLovelace(
+                `${process.env.NEXT_PUBLIC_ADDRESS}`,
+                `${process.env.NEXT_PUBLIC_COST_PRICE}000000`
+            );
+            tx.setMetadata(0, 'From Tools Royalty mint nft');
+        }
         tx.mintAsset(
             forgingScript,
             asset1,
         );
-
+        console.log(typeof(process.env.NEXT_PUBLIC_API_KEY))
+       
+       
         try {
             const unsignedTx = await tx.build();
             const signedTx = await wallet.signTx(unsignedTx);
@@ -168,6 +180,23 @@ const Mint: NextPageWithLayout = () => {
         handMint(values)
     };
 
+
+    const onChangePro = (checked: boolean) => {
+        setRoyalty(checked)
+        let data = [...properties]
+        const index = data.findIndex(x => x.disable)
+        if (checked) {
+            data.splice(index, 1)
+            setProPerties(data)
+        } else if (index === -1) {
+            data.push({
+                key: 'MinBy',
+                value: 'DCOne',
+                disable: true
+            })
+            setProPerties(data)
+        }
+    };
     return (
         <><Spin spinning={loading} delay={500}>
 
@@ -185,13 +214,22 @@ const Mint: NextPageWithLayout = () => {
                         >
                             <Form.Item
                                 name="name"
+                                label="Asset Name"
                                 rules={[{ required: true, message: 'Please input your asset name!' }]}
                             >
                                 <Input placeholder="Asset Name *" />
                             </Form.Item>
 
-                            <Form.Item name="description">
+                            <Form.Item name="description" label="Description">
                                 <Input.TextArea placeholder="Description" />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="quantity"
+                                label="Quantity"
+                                rules={[{ required: true, message: 'Please input the quantity!' }]}
+                            >
+                                <InputNumber min={1} placeholder="Quantity" />
                             </Form.Item>
 
                             <Form.Item name="type_token">
@@ -201,42 +239,41 @@ const Mint: NextPageWithLayout = () => {
                                 </Radio.Group>
                             </Form.Item>
 
-                            <Space direction="vertical" size="large">
-                                <Space>
-                                    <Text>Quantity: </Text>
-                                    <InputNumber
-                                        disabled
-                                        addonBefore={<Button onClick={decrementCounter} type="link" icon={<MinusOutlined />} />}
-                                        addonAfter={<Button onClick={incrementCounter} type="link" icon={<PlusOutlined />} />}
-                                        value={quantity}
-                                        style={{ textAlign: 'center', fontWeight: 'bold' }}
-                                    />
 
-                                </Space>
-
-                                <Space direction="vertical">
-                                    <Upload {...props} maxCount={1}>
-                                        <Button icon={<UploadOutlined />}>Asset Image *</Button>
-                                    </Upload>
-                                </Space>
-
+                            <Space direction="vertical" style={{ marginBottom: '10px' }}>
+                                <Upload {...props} maxCount={1}>
+                                    <Button icon={<UploadOutlined />}>Asset Image *</Button>
+                                </Upload>
                             </Space>
 
-
                         </Form>
+
+                        <Space style={{ margin: '10px 0' }}>
+                            <Text>Professional: <Tooltip title="Pro will remove royalty"><InfoCircleOutlined /></Tooltip> </Text>
+                            <Switch onChange={onChangePro} checked={royalty} />
+                        </Space>
 
                         {
                             properties.map((value, index) =>
                                 <Row gutter={16} style={{ marginTop: '10px' }} key={index}>
                                     <Col span={11}>
                                         <Input name="key" placeholder="Property Name" value={value.key}
+                                            disabled={value?.disable}
                                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFormChange(index, event)} />
                                     </Col>
                                     <Col span={11}>
                                         <Input name="value" placeholder="Property Value" value={value.value}
+                                            disabled={value?.disable}
                                             onChange={(event: React.ChangeEvent<HTMLInputElement>) => handleFormChange(index, event)} />
                                     </Col>
-                                    <Col span={2}><Button danger icon={<DeleteOutlined />} disabled={properties.length > 1 ? false : true} onClick={() => { removeFields(index) }}></Button></Col>
+                                    <Col span={2}>
+                                        <Button
+                                            danger
+                                            icon={<DeleteOutlined />}
+                                            disabled={value?.disable ? true : false}
+                                            onClick={() => { removeFields(index) }}>
+                                        </Button>
+                                    </Col>
                                 </Row>
 
                             )}
