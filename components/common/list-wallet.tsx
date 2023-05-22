@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Modal, List, Avatar, Alert } from 'antd';
 
 import { useWallet } from '@meshsdk/react';
@@ -14,21 +14,19 @@ export function ModalWallet(props: Prop) {
     const router = useRouter()
     const { open, handleClose } = props;
 
-    const { connected, wallet, connect, error } = useWallet();
-    const { login, name } = useAuth()
-    const [nameWallet, setNameWallet] = useState<string>("");
+    const { connected, wallet, connect, error, name } = useWallet();
+    const { login, nameWallet } = useAuth()
 
     const wallets = useWalletList();
 
     useEffect(() => {
-        if (connected && open && nameWallet) {
-            login(nameWallet);
+        if (connected && open) {
+            login(name);
             handleClose();
         }
     }, [wallet, nameWallet])
 
     const handConnect = (name: string) => {
-        setNameWallet(name)
         connect(name);
     }
 
