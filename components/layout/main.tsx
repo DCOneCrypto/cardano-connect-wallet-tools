@@ -20,20 +20,7 @@ const HeartIcon = (props: Partial<CustomIconComponentProps>) => (
 
 export function MainLayout({ children }: LayoutProps) {
   const { token: { colorBgContainer } } = theme.useToken();
-  const router = useRouter();
-  const [selectMenu, setSelectMenu] = useState<string>('1')
 
-  useEffect(() => {
-    const pathname = router.pathname
-    console.log(pathname)
-    const index: number = listMenu.findIndex(x => x.link === pathname)
-    if (index != -1) {
-      console.log(index)
-      setSelectMenu((index + 1).toString())
-    }else if(pathname == "/mint"){
-      setSelectMenu("1")
-    }
-  }, [router])
 
 
   return (
@@ -45,11 +32,11 @@ export function MainLayout({ children }: LayoutProps) {
           <div style={{ padding: 24, minHeight: "80vh", background: colorBgContainer }}>{children}</div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
-          ©2023 Created by Team DCOne Crypto &nbsp;
+          Created by Team DCOne Crypto &nbsp;
           {/* <TwitterOutlined TwitterOutlined/> */}
-          <Link href="https://twitter.com/DCOneCrypto"><TwitterOutlined/></Link> &nbsp;
-          <Link href="https://t.me/dconecryptovn"><HeartIcon /></Link>
-          </Footer>
+          <Link href="https://twitter.com/DCOneCrypto"><TwitterOutlined /></Link> &nbsp;
+          <Link href="https://t.me/dconecrypto"><HeartIcon /></Link>
+        </Footer>
       </Layout>
     </Layout>
   );

@@ -28,4 +28,15 @@ export interface Properies{
   value: string,
   disable?: boolean
 }
-export type TypeToken = "721" | '20'
+export const DCOneProperty: Array<Properies>=[
+  {
+    key: "MinBy",
+    value: "DCOne Crypto",
+    disable: true
+  },
+  {
+    key: "Website",
+    value: "https://dconecrypto.finance",
+    disable: true
+  }
+]

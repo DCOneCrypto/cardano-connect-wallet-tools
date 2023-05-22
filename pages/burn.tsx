@@ -17,7 +17,6 @@ const Burn: NextPageWithLayout = () => {
     const [asset, setAsset] = useState<any>();
   
     const handRow = (record: any) => {
-        console.log(record)
         setAsset(record);
         setOpenModalBurn(true);
         

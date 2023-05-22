@@ -24,7 +24,7 @@ const EllipsisMiddle: React.FC<{ suffixCount: number; children: string; copy?: b
         <>
             {
                 copy ? <Text style={{ maxWidth: '100%' }} copyable={{ text: children }}>
-                    {start}
+                    {start}...
                 </Text> :
                     <Text style={{ maxWidth: '100%' }}>
                         {start}
@@ -38,13 +38,11 @@ export function HeaderLayout() {
     const { token: { colorBgContainer, colorPrimary } } = theme.useToken();
 
     const [openModal, setOpenModal] = useState<boolean>(false);
-    const { connected, wallet, connect, disconnect} = useWallet();
+    const { connected, wallet, connect, disconnect, name} = useWallet();
     const [balance, setBalance] = useState<number>(0);
     const [address, setAddress] = useState<string>("")
-    const [nameWallet, setNameWallet] = useState<string>("");
 
-    const { name, logout } = useAuth();
-    const router = useRouter()
+    const { logout, nameWallet } = useAuth();
     // const lovelace = useLovelace();
 
 
@@ -56,7 +54,7 @@ export function HeaderLayout() {
     useEffect(() => {
         getWallet();
         getAddress();
-    }, [wallet, name]);
+    }, [wallet, nameWallet, connected, name]);
 
     const getWallet = async () => {
         if (wallet && connected) {
@@ -67,13 +65,9 @@ export function HeaderLayout() {
             if (result) {
                 setBalance(result.quantity / 1000000)
             }
-            if(name){
-                setNameWallet(name)
-            }
 
-        } else if (name) {
-            connect(name)
-            setNameWallet(name)
+        } else if (nameWallet) {
+            connect(nameWallet)
         }
     }
     const getAddress = async () => {
@@ -117,7 +111,7 @@ export function HeaderLayout() {
                                     <Row gutter={[10, 0]} justify="space-between" style={{ padding: '16px' }}>
                                         <Col span={12}>
                                             <Title level={5}>
-                                                {nameWallet.charAt(0).toUpperCase() + nameWallet.slice(1)}
+                                                {name.charAt(0).toUpperCase() + name.slice(1)}
                                             </Title>
                                         </Col>
                                         <Col span={12} style={{ textAlign: 'right' }}>

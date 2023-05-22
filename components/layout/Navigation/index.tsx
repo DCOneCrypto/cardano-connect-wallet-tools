@@ -13,13 +13,11 @@ export function NavigationLayout() {
     
     useEffect(() => {
         const pathname = router.pathname
-        console.log(pathname)
         const index: number = listMenu.findIndex(x => x.link === pathname)
         if (index != -1) {
-            console.log(index)
             setSelectMenu((index + 1).toString())
         }else if(pathname === "/mint"){
-            setSelectMenu("1")
+            setSelectMenu("2")
         }
     }, [router])
 
@@ -36,8 +34,8 @@ export function NavigationLayout() {
             }}
         >
             <div className="logo">
-            <Avatar src={<img src="/img/Cardano_Logo.svg" alt="avatar" />} />
-             <span style={{marginLeft: '10px'}}>Cardano</span>
+            <Avatar src={<img src="/img/dcone_logo.jpg" alt="avatar" />} />
+             <span style={{marginLeft: '10px'}}>DCOne Crypto</span>
             </div>
             <Menu
                 theme="dark"

@@ -16,7 +16,6 @@ interface Prop {
 // const ModalTokenList: React.FC<Prop> = (props: Prop) =>{
 export function ModalTokenList(props: Prop) {
     const { open, handleClose, assets } = props;
-    console.log(assets)
 
     const columns: ColumnsType<any> = [
         {

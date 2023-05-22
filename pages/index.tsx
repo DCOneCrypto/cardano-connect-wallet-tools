@@ -55,7 +55,6 @@ const Home: NextPageWithLayout = () => {
     if (assets) {
       let arr: any[] = []
       assets.forEach((item: any) => {
-        console.log(item)
         arr.push({
           assetName: item.assetName,
           quantity: item.quantity,
@@ -258,7 +257,6 @@ const Home: NextPageWithLayout = () => {
       if (txHash) {
         handReset();
         redirect_scan(txHash, inputFields[0].address)
-        // window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
       }
       console.log(txHash)
     } catch (error) {
@@ -269,7 +267,7 @@ const Home: NextPageWithLayout = () => {
   return (
     <>
       <Space direction="vertical" size={16} style={{ display: 'flex' }}>
-        <Title level={2}>Send many tokens</Title>
+        <Title level={2}>Send Multiple Tokens</Title>
         <AlertUpdateGroup show={!connected} />
         {inputFields.map((input, index) => {
           return (
@@ -304,7 +302,7 @@ const Home: NextPageWithLayout = () => {
                           <Row justify="space-between">
                             <Col span={12}>
                               <Space direction="vertical">
-                                <Button type="text" disabled={array_assets.length > 0 ? false : true} onClick={() => handOpenModal(index, key)}>{value.type == 'nft' ? value.name : 'ada'} <ArrowRightOutlined /></Button>
+                                <Button type="text" disabled={array_assets.length > 0 ? false : true} onClick={() => handOpenModal(index, key)}>{value.type == 'nft' ? value.name.substring(0,7)+'...' : 'ada'} <ArrowRightOutlined /></Button>
                                 {/* <Text>Total: {value.type == 'ada' ? balance.toLocaleString().split(".")[0] : value.quantity_default}</Text> */}
                               </Space>
                             </Col>

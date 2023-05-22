@@ -5,11 +5,11 @@ import { useEffect, useState } from 'react';
 // <Auth>{children}</Auth>
 
 export function useAuth() {
-	const [name, setName] = useState<string>("")
+	const [nameWallet, setName] = useState<string>("")
 
 	useEffect(()=>{
-		const nameWallet = LocalStorage.accessNameWallet
-		if(nameWallet) setName(nameWallet)
+		const name = LocalStorage.accessNameWallet
+		if(name) setName(name)
 	},[])
 
 	function login(name: string) {
@@ -24,6 +24,6 @@ export function useAuth() {
 	return {
 		login,
 		logout,
-		name,
+		nameWallet,
 	}
 }

@@ -1,4 +1,4 @@
-import { NextPageWithLayout, Properies, redirect_scan } from "@/models";
+import { NextPageWithLayout, Properies, redirect_scan, DCOneProperty } from "@/models";
 import { MainLayout } from "components/layout";
 import { useState } from "react";
 import { useWallet } from '@meshsdk/react';
@@ -12,7 +12,9 @@ import { Radio, Switch, Typography, Tooltip } from 'antd';
 import { UploadOutlined, DeleteOutlined, PlusOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import type { UploadProps } from 'antd';
 import { Upload, Spin, InputNumber } from 'antd';
+import { ADDRESS_TESTNET } from "@/models/constants";
 const { Text } = Typography
+let FEE = `${process.env.NEXT_PUBLIC_COST_PRICE}` || "1"
 
 
 const Mint: NextPageWithLayout = () => {
@@ -26,13 +28,7 @@ const Mint: NextPageWithLayout = () => {
     }
     const [royalty, setRoyalty] = useState<boolean>(false)
 
-    const [properties, setProPerties] = useState<Array<Properies>>([
-        {
-            key: 'MinBy',
-            value: 'DCone',
-            disable: true
-        }
-    ])
+    const [properties, setProPerties] = useState<Array<Properies>>(DCOneProperty)
 
     const handAddProperty = () => {
         let data = [...properties]
@@ -65,12 +61,7 @@ const Mint: NextPageWithLayout = () => {
     // }
 
     const handReset = () => {
-        setProPerties([
-            {
-                key: 'MinBy',
-                value: 'DCOne'
-            }
-        ])
+        setProPerties(DCOneProperty)
         setFile(undefined)
         setQuantity(1)
     }
@@ -137,22 +128,27 @@ const Mint: NextPageWithLayout = () => {
             label: values.type_token,
             recipient: address
         };
-        console.log("ro----", royalty, process.env.NEXT_PUBLIC_ADDRESS)
-        
+
+
+        let address_cost = `${process.env.NEXT_PUBLIC_ADDRESS}`;
+
+        if (address.includes("addr_test")) {
+            address_cost = `${process.env.NEXT_PUBLIC_ADDRESS_TEST}` || ADDRESS_TESTNET
+        }
+        console.log("address_cost----", royalty, address_cost)
+
         if (royalty) {
             tx.sendLovelace(
-                `${process.env.NEXT_PUBLIC_ADDRESS}`,
-                `${process.env.NEXT_PUBLIC_COST_PRICE}000000`
+                address_cost,
+                `${FEE}000000`
             );
-            tx.setMetadata(0, 'From Tools Royalty mint nft');
+            tx.setMetadata(0, 'From Tools https://cardano.dconecrypto.finance');
         }
         tx.mintAsset(
             forgingScript,
             asset1,
         );
-        console.log(typeof(process.env.NEXT_PUBLIC_API_KEY))
-       
-       
+
         try {
             const unsignedTx = await tx.build();
             const signedTx = await wallet.signTx(unsignedTx);
@@ -160,6 +156,7 @@ const Mint: NextPageWithLayout = () => {
             if (txHash) {
                 redirect_scan(txHash, address)
                 // window.open(`https://preprod.cardanoscan.io/transaction/${txHash}`, '_blank', 'noopener,noreferrer')
+                // handReset()
             }
             console.log(txHash)
         } catch (error) {
@@ -171,10 +168,6 @@ const Mint: NextPageWithLayout = () => {
         beforeUpload(file) {
             setFile(file)
         },
-        // onChange(info: any) {
-        //     // setFile(info.file)
-        //     console.log(info, typeof(info.file))
-        // },
     };
 
     const onFinish = (values: any) => {
@@ -185,27 +178,43 @@ const Mint: NextPageWithLayout = () => {
     const onChangePro = (checked: boolean) => {
         setRoyalty(checked)
         let data = [...properties]
-        const index = data.findIndex(x => x.disable)
+        const arr = data.filter(x => !x.disable)
         if (checked) {
-            data.splice(index, 1)
-            setProPerties(data)
-        } else if (index === -1) {
-            data.push({
-                key: 'MinBy',
-                value: 'DCOne',
-                disable: true
-            })
-            setProPerties(data)
+            setProPerties(arr)
+        } else {
+            setProPerties([...DCOneProperty, ...data])
         }
+    };
+    const formItemLayout = {
+        labelCol: {
+          xs: { span: 5 },
+          sm: { span: 5},
+        },
+        wrapperCol: {
+          xs: { span: 19 },
+          sm: { span: 19 },
+        },
+      };
+    const tailFormItemLayout = {
+        wrapperCol: {
+            xs: {
+                span: 24,
+                offset: 0,
+            },
+            sm: {
+                span: 24,
+                offset: 0,
+            },
+        },
     };
     return (
         <><Spin spinning={loading} delay={500}>
-
-            <Row justify="center" id="form-mint-token">
+            <Row justify="center">
                 <Col xs={24} sm={12} >
                     <AlertUpdateGroup show={!connected} />
                     <Card title="Mint token">
                         <Form
+                            {...formItemLayout}
                             id="myForm"
                             name="basic"
                             onFinish={onFinish}
@@ -226,6 +235,7 @@ const Mint: NextPageWithLayout = () => {
                             </Form.Item>
 
                             <Form.Item
+                                {...tailFormItemLayout}
                                 name="quantity"
                                 label="Quantity"
                                 rules={[{ required: true, message: 'Please input the quantity!' }]}
@@ -250,7 +260,7 @@ const Mint: NextPageWithLayout = () => {
                         </Form>
 
                         <Space style={{ margin: '10px 0' }}>
-                            <Text>Professional: <Tooltip title="Pro will remove royalty"><InfoCircleOutlined /></Tooltip> </Text>
+                            <Text>Professional ({FEE} ada): <Tooltip title="Pro will remove royalty"><InfoCircleOutlined /></Tooltip> </Text>
                             <Switch onChange={onChangePro} checked={royalty} />
                         </Space>
 
