@@ -3,7 +3,7 @@ import { MainLayout } from "components/layout";
 import React from 'react';
 import { Card, Space } from 'antd';
 import { useEffect, useState } from "react";
-import { useAssets, useLovelace, useWallet } from '@meshsdk/react';
+import { useAssets, useWallet } from '@meshsdk/react';
 import { ModalTokenList } from "@/components/form";
 import { Transaction } from "@meshsdk/core";
 import { AlertUpdateGroup } from "@/components/common";
@@ -20,8 +20,9 @@ const { Title, Text } = Typography;
 
 
 const Home: NextPageWithLayout = () => {
-  const { connected, wallet, error, connect, disconnect } = useWallet();
+  const { connected, wallet} = useWallet();
   const [balance, setBalance] = useState<number>(0)
+  const [errorInputBalance, setErrorInputBalance] = useState<boolean>(false);
   const initBundle = () => {
     const bundle: Bundle = {
       address: '', nfts: [
@@ -120,10 +121,12 @@ const Home: NextPageWithLayout = () => {
   }
 
   const handleFormChangeNft = (index: number, event: React.ChangeEvent<HTMLInputElement>, key: number) => {
+    console.log("vale:--",event.target.value)
+    console.log(inputFields.filter(x =>x.nfts.filter(y=>y?.error===true)))
 
     let data = [...inputFields];
     try {
-      let value = event.target.value
+      let value = Number(event.target.value)
       if (typeof (value) != 'number') {
 
       }
@@ -131,37 +134,38 @@ const Home: NextPageWithLayout = () => {
       if (nft_current.type === 'nft') {
         let nfts: any[] = []
         for (let i = 0; i < data.length; i++) {
-          if (i == key) {
-            continue
-          }
           nfts = nfts.concat(data[i].nfts.filter(x => x.type == 'nft' && x.unit == nft_current.unit))
         }
-        const total_balance = nfts.reduce((n, { balance }) => Number(n) + Number(balance), 0) + Number(value)
-        if (nft_current.quantity_default < total_balance) {
+        const total_balance = (nfts.reduce((n, { balance }) => Number(n) + Number(balance), 0) + Number(value)) - Number(nft_current.balance)
+        console.log(total_balance, Number(nft_current.quantity_default))
+        if (Number(nft_current.quantity_default) < total_balance) {
           data[index].nfts[key].error = true
+          data[index].nfts[key].balance = Number(value)
+          setErrorInputBalance(true)
         } else {
           data[index].nfts[key].error = false
           data[index].nfts[key].balance = Number(value)
+          setErrorInputBalance(false)
         }
       } else {
         let nfts: Nft[] = []
         for (let i = 0; i < data.length; i++) {
-          if (i == key) {
-            continue
-          }
           nfts = nfts.concat(data[i].nfts.filter(x => x.type == 'ada'))
         }
-        const total_balance = nfts.reduce((n, { balance }) => Number(n) + Number(balance), 0) + Number(value)
+        const total_balance = (nfts.reduce((n, { balance }) => Number(n) + Number(balance), 0) + Number(value)) - Number(nft_current.balance)
         if (balance < total_balance) {
           data[index].nfts[key].error = true
+          data[index].nfts[key].balance = Number(value)
+          setErrorInputBalance(true)
         } else {
           data[index].nfts[key].error = false
           data[index].nfts[key].balance = Number(value)
+          setErrorInputBalance(false)
         }
       }
       setInputFields(data);
     } catch (error) {
-
+      console.log(error)
     }
     console.log("da---", data)
   }
@@ -340,7 +344,9 @@ const Home: NextPageWithLayout = () => {
       </Space>
       <Space style={{ marginTop: "20px" }}>
         <Button type="primary" onClick={handSubmit} disabled={
-          inputFields.filter(x => x.address === '').length > 0 ? true : false && !connected
+          inputFields.filter(x => x.address === '').length > 0
+          || errorInputBalance
+          || !connected
         }>Submit</Button>
         <Button onClick={handReset}>Reset</Button>
       </Space>

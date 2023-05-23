@@ -106,7 +106,7 @@ const Mint: NextPageWithLayout = () => {
                 const result = await response.json()
                 if (result && result["IpfsHash"]) {
                     setLoading(false);
-                    property["image"] = `ipfs://${result["IpfsHash"]}`
+                    property["logo"] = `ipfs://${result["IpfsHash"]}`
                     // property["mediaType"] = "image/jpeg"
                     // console.log(file)
 
@@ -125,7 +125,7 @@ const Mint: NextPageWithLayout = () => {
             assetName: values.name,
             assetQuantity: values.quantity.toString(),
             metadata: assetMetadata,
-            label: values.type_token,
+            label: "20",
             recipient: address
         };
 
@@ -212,7 +212,7 @@ const Mint: NextPageWithLayout = () => {
             <Row justify="center">
                 <Col xs={24} sm={12} >
                     <AlertUpdateGroup show={!connected} />
-                    <Card title="Mint token">
+                    <Card title="Mint NFTs/Token">
                         <Form
                             {...formItemLayout}
                             id="myForm"

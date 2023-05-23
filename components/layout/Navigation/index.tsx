@@ -10,20 +10,20 @@ const { Sider } = Layout;
 export function NavigationLayout() {
     const router = useRouter();
     const [selectMenu, setSelectMenu] = useState<string>('1')
-    
+
     useEffect(() => {
         const pathname = router.pathname
         const index: number = listMenu.findIndex(x => x.link === pathname)
         if (index != -1) {
             setSelectMenu((index + 1).toString())
-        }else if(pathname === "/mint"){
+        } else if (pathname === "/mint") {
             setSelectMenu("2")
         }
     }, [router])
 
     return (
         <Sider
-            style={{minHeight: '100vh'}}
+            style={{ minHeight: '100vh' }}
             breakpoint="lg"
             collapsedWidth="0"
             onBreakpoint={(broken) => {
@@ -34,8 +34,10 @@ export function NavigationLayout() {
             }}
         >
             <div className="logo">
-            <Avatar src={<img src="/img/dcone_logo.jpg" alt="avatar" />} />
-             <span style={{marginLeft: '10px'}}>DCOne Crypto</span>
+                <Link href="/">
+                    <Avatar src={<img src="/img/dcone_logo.jpg" alt="avatar" />} />
+                    <span style={{ marginLeft: '10px' }}>DCOne Crypto</span>
+                </Link>
             </div>
             <Menu
                 theme="dark"

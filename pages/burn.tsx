@@ -56,7 +56,7 @@ const Burn: NextPageWithLayout = () => {
                     !connected && <Col span={24}><AlertUpdateGroup show={!connected} /></Col>
                 }
                 <Col span={24} style={{textAlign:'right'}}>
-                <Button href="/mint" type="primary">Mint Token</Button>
+                <Button href="/mint" type="primary">Mint NFTs/Token</Button>
                 </Col>
                 <Col span={24}>
                     <Table rowKey="unit" columns={columns} dataSource={assets} pagination={false} />
