@@ -79,3 +79,12 @@ body {
 .ant-form-item-label{
   text-align: left !important;
 }
+.footer-ul {
+  list-style-type: none;
+}
+.footer-ul li {
+  /* list-style: none; */
+  /* position: relative; */
+  padding-top: 5px;
+}
+    

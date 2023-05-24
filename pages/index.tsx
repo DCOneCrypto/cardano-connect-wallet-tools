@@ -20,7 +20,7 @@ const { Title, Text } = Typography;
 
 
 const Home: NextPageWithLayout = () => {
-  const { connected, wallet} = useWallet();
+  const { connected, wallet } = useWallet();
   const [balance, setBalance] = useState<number>(0)
   const [errorInputBalance, setErrorInputBalance] = useState<boolean>(false);
   const initBundle = () => {
@@ -103,8 +103,10 @@ const Home: NextPageWithLayout = () => {
           asset_unit_exists.push(item.unit)
         }
       })
+      console.log("arraybefore--", array_assets)
       const new_arr_assets = array_assets.filter(x => !asset_unit_exists.includes(x.unit))
       setAssets(new_arr_assets)
+      console.log("add--", new_arr_assets)
       setPositionForm({ parent: index, child: -1 })
       setOpenModal(true)
     } else {
@@ -121,8 +123,8 @@ const Home: NextPageWithLayout = () => {
   }
 
   const handleFormChangeNft = (index: number, event: React.ChangeEvent<HTMLInputElement>, key: number) => {
-    console.log("vale:--",event.target.value)
-    console.log(inputFields.filter(x =>x.nfts.filter(y=>y?.error===true)))
+    console.log("vale:--", event.target.value)
+    console.log(inputFields.filter(x => x.nfts.filter(y => y?.error === true)))
 
     let data = [...inputFields];
     try {
@@ -137,7 +139,6 @@ const Home: NextPageWithLayout = () => {
           nfts = nfts.concat(data[i].nfts.filter(x => x.type == 'nft' && x.unit == nft_current.unit))
         }
         const total_balance = (nfts.reduce((n, { balance }) => Number(n) + Number(balance), 0) + Number(value)) - Number(nft_current.balance)
-        console.log(total_balance, Number(nft_current.quantity_default))
         if (Number(nft_current.quantity_default) < total_balance) {
           data[index].nfts[key].error = true
           data[index].nfts[key].balance = Number(value)
@@ -179,13 +180,13 @@ const Home: NextPageWithLayout = () => {
       data[positionForm.parent].nfts[positionForm.child].unit = asset.unit
       data[positionForm.parent].nfts[positionForm.child].quantity_default = asset.quantity
       setInputFields(data)
-      refresh_assets()
     } else if (asset?.assetName && positionForm) {
       let data = [...inputFields]
       let obj = data[positionForm.parent]
       obj.nfts.push({ type: 'nft', balance: 0, name: asset.assetName, unit: asset.unit, quantity_default: asset.quantity })
       setInputFields(data)
     }
+    refresh_assets()
   }
   const handOpenModal = (parent: number, child: number) => {
     setPositionForm({
@@ -264,7 +265,7 @@ const Home: NextPageWithLayout = () => {
       }
       console.log(txHash)
     } catch (error) {
-
+      console.log("erro--", error)
     }
   }
 
@@ -306,7 +307,7 @@ const Home: NextPageWithLayout = () => {
                           <Row justify="space-between">
                             <Col span={12}>
                               <Space direction="vertical">
-                                <Button type="text" disabled={array_assets.length > 0 ? false : true} onClick={() => handOpenModal(index, key)}>{value.type == 'nft' ? value.name.substring(0,7)+'...' : 'ada'} <ArrowRightOutlined /></Button>
+                                <Button type="text" disabled={array_assets.length > 0 ? false : true} onClick={() => handOpenModal(index, key)}>{value.type == 'nft' ? value.name.substring(0, 7) + '...' : 'ada'} <ArrowRightOutlined /></Button>
                                 {/* <Text>Total: {value.type == 'ada' ? balance.toLocaleString().split(".")[0] : value.quantity_default}</Text> */}
                               </Space>
                             </Col>
