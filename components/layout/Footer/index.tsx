@@ -25,9 +25,6 @@ export function FooterLayout() {
 
     return (
         <Footer >
-            {/* Created by Team DCOne Crypto &nbsp;
-        <Link href="https://twitter.com/DCOneCrypto"><TwitterOutlined /></Link> &nbsp;
-        <Link href="https://t.me/dconecrypto"><TeleGramIcon /></Link> */}
             <Row gutter={[20, 10]}>
                 <Col span={24}>
                     <Link href="https://dconecrypto.finance/ecosystem-map.html" style={{ display: 'flex', alignItems: 'center' }}>
@@ -41,7 +38,7 @@ export function FooterLayout() {
                     <Link href="https://t.me/dconecrypto"><TeleGramIcon /></Link>
                 </Col>
 
-                <Col span={12} offset={8} style={{ marginTop: '20px', marginBottom: '50px' }}>
+                <Col xs={{span:24, offset:0}} sm={{span:12, offset:8}} style={{ marginTop: '20px', marginBottom: '50px' }}>
                     <Row justify="center">
                         <Col span={12}>
                             <Title level={5}>USEFUL BUILDING</Title>
