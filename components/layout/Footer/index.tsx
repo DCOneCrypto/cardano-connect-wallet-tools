@@ -28,9 +28,10 @@ export function FooterLayout() {
             <Row gutter={[20, 10]}>
                 <Col span={24}>
                     <Link href="https://dconecrypto.finance/ecosystem-map.html" style={{ display: 'flex', alignItems: 'center' }}>
-                        <Avatar size="large" src="/img/dcone_logo.jpg" alt="avatar" />
+                        {/* <Avatar size="large" src="/img/dcone_logo.jpg" alt="avatar" /> */}
+                        <img src="https://dconecrypto.finance/Common/Images/app-logo-on-dark.svg" height={40}/>
                         {/* <span style={{ marginLeft: '10px' }}>DCOne Crypto</span> */}
-                        <Title level={5} style={{ marginBottom: '0' }}>DCOne Crypto</Title>
+                        {/* <Title level={5} style={{ marginBottom: '0' }}>DCOne Crypto</Title> */}
                     </Link></Col>
                 <Col span={24}>DCOne Crypto is a place where the community can receive updates from project owners, discuss and evaluate projects they are interested in. Website is built on a multi-language platform...</Col>
                 <Col span={24}>

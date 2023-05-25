@@ -35,8 +35,9 @@ export function NavigationLayout() {
         >
             <div className="logo">
                 <Link href="/">
-                    <Avatar src={<img src="/img/dcone_logo.jpg" alt="avatar" />} />
-                    <span style={{ marginLeft: '10px' }}>DCOne Crypto</span>
+                    <img src="https://dconecrypto.finance/Common/Images/app-logo-on-dark.svg" height={40}/>
+                    {/* <Avatar src="https://dconecrypto.finance/Common/Images/app-logo-on-dark.svg" /> */}
+                    {/* <span style={{ marginLeft: '10px' }}>DCOne Crypto</span> */}
                 </Link>
             </div>
             <Menu

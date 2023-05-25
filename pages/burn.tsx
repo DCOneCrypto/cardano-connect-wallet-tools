@@ -8,18 +8,19 @@ import { Button } from 'antd';
 import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ModalBurnToken } from "@/components/form";
+import Link from "next/link";
 
 
 const Burn: NextPageWithLayout = () => {
     const assets = useAssets();
-    const { connected} = useWallet();
+    const { connected } = useWallet();
     const [openModalBurn, setOpenModalBurn] = useState<boolean>(false);
     const [asset, setAsset] = useState<any>();
-  
+
     const handRow = (record: any) => {
         setAsset(record);
         setOpenModalBurn(true);
-        
+
     }
     const columns: ColumnsType<any> = [
         {
@@ -41,7 +42,7 @@ const Burn: NextPageWithLayout = () => {
             title: 'Action',
             key: 'action',
             render: (_, record) => (
-                <Button danger size="middle" onClick={()=>{handRow(record)}}>
+                <Button danger size="middle" onClick={() => { handRow(record) }}>
                     Burn
                 </Button>
             ),
@@ -50,22 +51,24 @@ const Burn: NextPageWithLayout = () => {
 
     return (
         <>
-         
+
             <Row gutter={[20, 30]}>
                 {
                     !connected && <Col span={24}><AlertUpdateGroup show={!connected} /></Col>
                 }
-                <Col span={24} style={{textAlign:'right'}}>
-                <Button href="/mint" type="primary">Mint NFTs/Token</Button>
+                <Col span={24} style={{ textAlign: 'right' }}>
+                    <Link href="/mint">
+                        <Button type="primary">Mint NFTs/Token</Button>
+                    </Link>
                 </Col>
                 <Col span={24}>
                     <Table rowKey="unit" columns={columns} dataSource={assets} pagination={false} />
                 </Col>
             </Row>
             {
-                asset && <ModalBurnToken open={openModalBurn} asset={asset} handleClose={()=>{
+                asset && <ModalBurnToken open={openModalBurn} asset={asset} handleClose={() => {
                     setOpenModalBurn(false)
-                }}/>
+                }} />
             }
         </>
 

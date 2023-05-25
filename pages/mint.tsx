@@ -20,12 +20,12 @@ let FEE = `${process.env.NEXT_PUBLIC_COST_PRICE}` || "1"
 const Mint: NextPageWithLayout = () => {
     const { connected, wallet } = useWallet();
     const [quantity, setQuantity] = useState<number>(1);
-    const incrementCounter = () => setQuantity(quantity + 1);
+    // const incrementCounter = () => setQuantity(quantity + 1);
     const [file, setFile] = useState<File>()
     const [loading, setLoading] = useState<boolean>(false)
-    let decrementCounter = () => {
-        if (quantity > 1) setQuantity(quantity - 1);
-    }
+    // let decrementCounter = () => {
+    //     if (quantity > 1) setQuantity(quantity - 1);
+    // }
     const [royalty, setRoyalty] = useState<boolean>(false)
 
     const [properties, setProPerties] = useState<Array<Properies>>(DCOneProperty)
@@ -106,7 +106,7 @@ const Mint: NextPageWithLayout = () => {
                 const result = await response.json()
                 if (result && result["IpfsHash"]) {
                     setLoading(false);
-                    property["logo"] = `ipfs://${result["IpfsHash"]}`
+                    property["image"] = `ipfs://${result["IpfsHash"]}`
                     // property["mediaType"] = "image/jpeg"
                     // console.log(file)
 
@@ -117,16 +117,19 @@ const Mint: NextPageWithLayout = () => {
         }
         setLoading(false);
         const assetMetadata: AssetMetadata = {
-            "name": values.name,
-            "description": values.description,
+            name: values.name,
+            description: values.description,
+            // ticker: "Update",
+            // decimals: 100,
+            // src: property["image"],
             ...property
         };
         const asset1: Mint = {
             assetName: values.name,
             assetQuantity: values.quantity.toString(),
             metadata: assetMetadata,
-            label: "20",
-            recipient: address
+            label: values.type_token,
+            recipient: address,
         };
 
 
