@@ -14,7 +14,6 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 import { Col, Row } from 'antd';
-import Script from 'next/script'
 
 
 const { Title, Text } = Typography;
@@ -272,18 +271,7 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <>
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=G-68XXGS68BB"
-        strategy="afterInteractive"
-      />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-68XXGS68BB');
-        `}
-      </Script>
+     
       <Space direction="vertical" size={16} style={{ display: 'flex' }}>
         <Title level={2}>Send Multiple Tokens</Title>
         <AlertUpdateGroup show={!connected} />
