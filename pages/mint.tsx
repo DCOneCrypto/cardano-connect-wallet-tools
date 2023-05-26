@@ -13,6 +13,7 @@ import { UploadOutlined, DeleteOutlined, PlusOutlined, InfoCircleOutlined } from
 import type { UploadProps } from 'antd';
 import { Upload, Spin, InputNumber } from 'antd';
 import { ADDRESS_TESTNET } from "@/models/constants";
+import { Seo } from "@/components/common/seo";
 const { Text } = Typography
 let FEE = `${process.env.NEXT_PUBLIC_COST_PRICE}` || "1"
 
@@ -211,7 +212,14 @@ const Mint: NextPageWithLayout = () => {
         },
     };
     return (
-        <><Spin spinning={loading} delay={500}>
+        <>
+          <Seo data={{
+      title: "Mint NFTs/Token",
+      description: "DCOne Crypto is a place where the community can receive updates from project owners, discuss and evaluate projects they are interested in. Website is built on a multi-language platform...",
+      thumbnailUrl: "https://dconecrypto.finance/Common/Images/app-logo-on-dark.svg"
+    }}
+    />
+        <Spin spinning={loading} delay={500}>
             <Row justify="center">
                 <Col xs={24} sm={12} >
                     <AlertUpdateGroup show={!connected} />

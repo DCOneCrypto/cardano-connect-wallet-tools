@@ -14,7 +14,9 @@ import { ArrowRightOutlined } from '@ant-design/icons';
 import { Input } from 'antd';
 import { InfoCircleOutlined, UserOutlined } from '@ant-design/icons';
 import { Col, Row } from 'antd';
-import Script from 'next/script'
+import { Seo } from "@/components/common/seo";
+import { useRouter } from "next/router";
+
 
 
 const { Title, Text } = Typography;
@@ -24,6 +26,7 @@ const Home: NextPageWithLayout = () => {
   const { connected, wallet } = useWallet();
   const [balance, setBalance] = useState<number>(0)
   const [errorInputBalance, setErrorInputBalance] = useState<boolean>(false);
+  const router = useRouter()
   const initBundle = () => {
     const bundle: Bundle = {
       address: '', nfts: [
@@ -272,18 +275,14 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <>
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=G-68XXGS68BB"
-        strategy="afterInteractive"
-      />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-68XXGS68BB');
-        `}
-      </Script>
+    <Seo data={{
+      title: "Send Multiple Tokens",
+      description: "DCOne Crypto is a place where the community can receive updates from project owners, discuss and evaluate projects they are interested in. Website is built on a multi-language platform...",
+      thumbnailUrl: "/img/dcone_logo.jpg",
+      url: "https://cardano.dconecrypto.finance/"
+    }}
+    />
+    
       <Space direction="vertical" size={16} style={{ display: 'flex' }}>
         <Title level={2}>Send Multiple Tokens</Title>
         <AlertUpdateGroup show={!connected} />

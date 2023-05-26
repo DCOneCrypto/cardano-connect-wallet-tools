@@ -2,12 +2,14 @@ import * as React from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 // import createEmotionServer from '@emotion/server/create-instance'
 // import { , theme } from '@/utils'
+import Script from 'next/script'
 
 export default class MyDocument extends Document {
 	render() {
 		return (
 			<Html lang="en">
 				<Head>
+					<link rel="shortcut icon" href="https://dconecrypto.finance/favicon.ico" />
 					{/* PWA primary color */}
 					{/* <meta name="theme-color" content={theme.palette.primary.main} /> */}
 					<link
@@ -19,6 +21,18 @@ export default class MyDocument extends Document {
 						rel="stylesheet"
 					></link>
 				</Head>
+				<Script
+					src="https://www.googletagmanager.com/gtag/js?id=G-68XXGS68BB"
+					strategy="afterInteractive"
+				/>
+				<Script id="google-analytics" strategy="afterInteractive">
+					{`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-68XXGS68BB');
+        `}
+				</Script>
 				<body>
 					<Main />
 					<NextScript />

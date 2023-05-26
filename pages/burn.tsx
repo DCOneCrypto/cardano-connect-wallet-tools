@@ -9,6 +9,7 @@ import { Table } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
 import { ModalBurnToken } from "@/components/form";
 import Link from "next/link";
+import { Seo } from "@/components/common/seo";
 
 
 const Burn: NextPageWithLayout = () => {
@@ -51,7 +52,12 @@ const Burn: NextPageWithLayout = () => {
 
     return (
         <>
-
+            <Seo data={{
+                title: "Mint NFTs/Token",
+                description: "DCOne Crypto is a place where the community can receive updates from project owners, discuss and evaluate projects they are interested in. Website is built on a multi-language platform...",
+                thumbnailUrl: "https://dconecrypto.finance/Common/Images/app-logo-on-dark.svg"
+            }}
+            />
             <Row gutter={[20, 30]}>
                 {
                     !connected && <Col span={24}><AlertUpdateGroup show={!connected} /></Col>
