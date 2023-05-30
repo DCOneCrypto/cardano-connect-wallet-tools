@@ -122,7 +122,7 @@ export function HeaderLayout() {
                                             </Text>
                                         </Col>
                                         <Col span={24}>
-                                            <EllipsisMiddle suffixCount={25} copy>{address}</EllipsisMiddle>
+                                            <EllipsisMiddle suffixCount={23} copy>{address}</EllipsisMiddle>
                                         </Col>
                                         <Col span={24} >
                                             <Divider /></Col>
