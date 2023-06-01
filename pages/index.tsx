@@ -23,6 +23,7 @@ import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { Col, Row } from "antd";
 import { Seo } from "@/components/common/seo";
 import { useRouter } from "next/router";
+import Script from "next/script";
 
 const { Title, Text } = Typography;
 
@@ -319,6 +320,19 @@ const Home: NextPageWithLayout = () => {
 
   return (
     <>
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-68XXGS68BB"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-68XXGS68BB');
+        `}
+      </Script>
+
       <Seo
         data={{
           title: "Send Multiple Tokens",
