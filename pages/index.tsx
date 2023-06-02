@@ -279,7 +279,7 @@ const Home: NextPageWithLayout = () => {
         if (adas && adas.length > 0) {
           tx.sendLovelace(
             { address: recipient.address },
-            `${adas[0].balance.toString()}000000`
+            `${adas[0].balance * 1000000}`
           );
         }
         const nfts: Array<Nft> = recipient.nfts.filter(
