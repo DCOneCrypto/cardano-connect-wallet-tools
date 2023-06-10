@@ -171,6 +171,7 @@ const Mint: NextPageWithLayout = () => {
     const props: UploadProps = {
         beforeUpload(file) {
             setFile(file)
+            return false
         },
     };
 
