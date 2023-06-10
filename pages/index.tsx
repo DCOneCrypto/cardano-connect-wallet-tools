@@ -8,7 +8,7 @@ import {
 } from "@/models";
 import { MainLayout } from "components/layout";
 import React from "react";
-import { Card, Space } from "antd";
+import { Card, Space, Spin } from "antd";
 import { useEffect, useState } from "react";
 import { useAssets, useWallet } from "@meshsdk/react";
 import { ModalTokenList } from "@/components/form";
@@ -23,7 +23,6 @@ import { InfoCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { Col, Row } from "antd";
 import { Seo } from "@/components/common/seo";
 import { useRouter } from "next/router";
-import Script from "next/script";
 
 const { Title, Text } = Typography;
 
@@ -31,7 +30,7 @@ const Home: NextPageWithLayout = () => {
   const { connected, wallet } = useWallet();
   const [balance, setBalance] = useState<number>(0);
   const [errorInputBalance, setErrorInputBalance] = useState<boolean>(false);
-  const router = useRouter();
+  const [loading, setLoading] = useState<boolean>(false);
   const initBundle = () => {
     const bundle: Bundle = {
       address: "",
@@ -269,6 +268,7 @@ const Home: NextPageWithLayout = () => {
 
   const handSubmit = async () => {
     console.log(inputFields);
+    setLoading(true);
     try {
       let is_valid = false;
       const tx = new Transaction({ initiator: wallet });
@@ -300,6 +300,7 @@ const Home: NextPageWithLayout = () => {
           tx.sendAssets({ address: recipient.address }, assets);
         }
       }
+      setLoading(false)
       console.log(tx);
       if (!is_valid) {
         console.log("not found quantity");
@@ -314,25 +315,13 @@ const Home: NextPageWithLayout = () => {
       }
       console.log(txHash);
     } catch (error) {
+      setLoading(false);
       console.log("erro--", error);
     }
   };
 
   return (
     <>
-      <Script
-        src="https://www.googletagmanager.com/gtag/js?id=G-68XXGS68BB"
-        strategy="afterInteractive"
-      />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){window.dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', 'G-68XXGS68BB');
-        `}
-      </Script>
-
       <Seo
         data={{
           title: "Send Multiple Tokens",
@@ -342,6 +331,7 @@ const Home: NextPageWithLayout = () => {
           url: "https://cardano.dconecrypto.finance/",
         }}
       />
+      <Spin spinning={loading} delay={500}>
 
       <Space direction="vertical" size={16} style={{ display: "flex" }}>
         <Title level={2}>Send Multiple Tokens</Title>
@@ -492,6 +482,7 @@ const Home: NextPageWithLayout = () => {
         handleClose={handCloseModal}
         assets={array_assets}
       />
+      </Spin>
     </>
   );
 };
