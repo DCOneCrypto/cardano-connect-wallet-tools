@@ -1,5 +1,5 @@
 import React from "react";
-import { Alert } from "@mui/material";
+import { Alert } from 'antd';
 
 interface AlertUG {
   show: boolean;
@@ -10,7 +10,7 @@ export function AlertUpdateGroup(prop: AlertUG) {
   return (
     <>
     {
-        show &&  <Alert severity="warning">Connect your wallet and start exploring</Alert>
+        show && <Alert message="Connect your wallet and start exploring" type="warning" showIcon />
     }
     </>
   )
