@@ -1,7 +1,7 @@
 import { NextPage } from "next";
 import { AppProps } from "next/app";
 import { ReactElement, ReactNode } from "react";
-import { ArrowRightOutlined, FileImageOutlined, UnlockOutlined } from '@ant-design/icons';
+import { ArrowRightOutlined, FileImageOutlined, FileTextOutlined } from '@ant-design/icons';
 
 export interface LayoutProps{
     children: ReactNode // react node có thể là number, string, null
@@ -15,13 +15,15 @@ export type NextPageWithLayout = NextPage & {
 export type AppPropsWithLayout = AppProps & {
     Component: NextPageWithLayout
 }
-
 export const listMenu = [
     {
       name: "Send Multiple", link: "/", icon: ArrowRightOutlined
     },
     {
       name: "NFTs/Token", link: "/burn", icon: FileImageOutlined
+    },
+    {
+      name: "Document", link: "/docs", icon: FileTextOutlined
     }
   ]
 
