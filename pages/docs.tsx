@@ -41,7 +41,7 @@ const Docs: NextPageWithLayout = () => {
                 </Paragraph>
                 <Title level={2}><Link href="/burn" style={{ color: 'black' }}>Mint Nft, Token</Link></Title>
                 <Paragraph>
-                    - Select the mint menu will show a list of the number of nft, the wallet token is holding, you can burn the amount you want. (Chọn menu mint sẽ ra danh sách số lượng nft, token ví đang giữ, có thể burn số lượng bạn muốn)
+                    - Select the mint menu will show a list of the number of nft, the wallet token is holding, you can burn the quantity you want. (Chọn menu mint sẽ ra danh sách số lượng nft, token ví đang giữ, có thể burn số lượng bạn muốn)
                 </Paragraph>
                 <div style={{ padding: '20px' }}>
                     <Image
