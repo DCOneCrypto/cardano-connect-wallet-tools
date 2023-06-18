@@ -1,14 +1,154 @@
 
 import { NextPageWithLayout } from "@/models";
 import { MainLayout } from "components/layout";
-import { Typography } from 'antd';
 import React from 'react';
-import { Image } from 'antd';
-const { Title, Paragraph } = Typography;
 import { Seo } from "@/components/common/seo";
 import Link from "next/link";
+import { CaretRightOutlined } from '@ant-design/icons';
+import type { CollapseProps } from 'antd';
+import { Collapse, theme } from 'antd';
+import type { CSSProperties } from 'react';
+
+const text = `{{YOUR IPFS HASH}}`;
+
+const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelStyle) => [
+    {
+        key: '1',
+        label: 'Why use send multiple ada, token through our many wallets',
+        children: <p>
+            Because it's simple to operate, easy to use, and cost-effective and currently some of the big wallets don't have such as nami yoroid currently only eterl.
+        </p>,
+        style: panelStyle,
+    },
+    {
+        key: '2',
+        label: 'How send many Nfts, Token?',
+        children: <p>{text}</p>,
+        style: panelStyle,
+    },
+    {
+        key: '3',
+        label: 'How Mint Nft, Token?',
+        children: <p>{text}</p>,
+        style: panelStyle,
+    },
+    {
+        key: '4',
+        label: 'Why spend 1 ada to use professional?',
+        children: <p>Because it's just a fee to support the author</p>,
+        style: panelStyle,
+    },
+    {
+        key: '5',
+        label: 'Why use our token generator?',
+        children: <p>
+            Because it will be proactive and manage the policy id without any middle man
+        </p>,
+        style: panelStyle,
+    },
+    {
+        key: '6',
+        label: 'Why have burn nft, token?',
+        children: <p>Because convenience cut  quantity of tokens</p>,
+        style: panelStyle,
+    },
+    {
+        key: '7',
+        label: 'Why use our token generator?',
+        children: <p>
+            Because it will be proactive and manage the policy id without any middle man
+        </p>,
+        style: panelStyle,
+    },
+    {
+        key: '8',
+        label: 'How can I be sure my NFT is unique?',
+        children: <p>That's an excellent question.
+            Your NFT will be composed on three elements. A policyID, an asset Name, a quantity.
+            For NFTs, all of this components shall be a UNIQUE, otherwise it's not a NFT anymore.
+            To make sure that we cannot use the same POLICY ID again in the future and potentially build another similar NFT, we are using a <Link href="https://docs.cardano.org/native-tokens/learn/#mintingpolicyexamples">Time-Locking policy. </Link>
+            Long story short again: we make sure that this policyID cannot be used after the specific slot on the blockchain.
+            To be fully transparent, the slot number is automatically sent with the metadata when you will receive the token.
+            It's accessible in the following property of the metadata object: | mintedBeforeSlotNumber.</p>,
+        style: panelStyle,
+    },
+    {
+        key: '9',
+        label: 'How can I see my NFT content?',
+        children: <p>
+            A NFT is token but you generally link a file with it.
+            On our platform we accept images, videos, and audio files up to 15mb.
+            When your transaction is confirmed, the file is automatically pinned on a IPFS node.
+            It means that your file will be permanently accessible, and almost impossible to delete.
+            You will receive the IPFS hash of your file in the transaction metadata.
+            If you want to visualize it you can use the official IPFS gateway
+            Example: <Link href="https://ipfs.io/ipfs/">https://ipfs.io/ipfs/{text}</Link>
+            You can also see your minted token or NFT on pool.pm. You will find the link in the confirmation message
+        </p>,
+        style: panelStyle,
+    },
+    {
+        key: '10',
+        label: 'What is IPFS?',
+        children: <p>
+            The InterPlanetary File System (IPFS) is a protocol and peer-to-peer network for storing and sharing data in a distributed file system. IPFS uses content-addressing to uniquely identify each file in a global namespace connecting all computing devices. <Link href="https://ipfs.tech/">Check the official website.</Link>
+        </p>,
+        style: panelStyle,
+    },
+    {
+        key: '11',
+        label: 'How can I access a file on IPFS?',
+        children: <p>
+            You will receive the IPFS hash of your file in the transaction metadata.
+            If you want to visualize it you can use the official IPFS gateway
+            Example: <Link href="https://ipfs.io/ipfs/">https://ipfs.io/ipfs/{text}</Link>
+        </p>,
+        style: panelStyle,
+    },
+    {
+        key: '12',
+        label: "What's Plutus?",
+        children: <p>The Plutus Platform is the smart contract platform of the Cardano blockchain. You can read more about it <Link href="https://docs.cardano.org/plutus/learn-about-plutus/">here</Link>.        </p>,
+        style: panelStyle,
+    },
+    {
+        key: '13',
+        label: 'What is cardano?',
+        children: <p>
+            Cardano is a third generation block-chain platform build on the Proof-Of-Stake pattern.
+            Compared to other blockchain platforms (such as Ethereum Or Polkadot) it's the first to be founded on peer-reviewed research and developed through evidence-based methods.
+            https://cardano.org/.
+        </p>,
+        style: panelStyle,
+    },
+    {
+        key: '14',
+        label: 'What is ADA?',
+        children: <p>ADA is the main asset used on the cardano blockchain.
+            It's the official Crypto currency from the cardano blockchain.</p>,
+        style: panelStyle,
+    },
+    {
+        key: '15',
+        label: 'What is a NFT?',
+        children: <p>
+            Official documentation from WIKIPEDIA:
+            A non-fungible token (NFT) is a unit of data stored on a digital ledger, called a blockchain, that certifies a digital asset to be unique and therefore not interchangeable. NFTs can be used to represent items such as photos, videos, audio, and other types of digital files. Access to any copy of the original file, however, is not restricted to the buyer of the NFT. While copies of these digital items are available for anyone to obtain, NFTs are tracked on blockchains to provide the owner with a proof of ownership that is separate from copyright.
+        </p>,
+        style: panelStyle,
+    },
+
+];
 
 const Docs: NextPageWithLayout = () => {
+    const { token } = theme.useToken();
+
+    const panelStyle = {
+        marginBottom: 24,
+        background: token.colorFillAlter,
+        borderRadius: token.borderRadiusLG,
+        border: 'none',
+    };
     return (
         <>
             <Seo data={{
@@ -17,50 +157,13 @@ const Docs: NextPageWithLayout = () => {
                 thumbnailUrl: "https://dconecrypto.finance/Common/Images/app-logo-on-dark.svg"
             }}
             />
-            <Typography>
-                <Title>Introduction</Title>
-                <Paragraph>
-                    Currently there are many wallets on the Cardano blockchain platform but there are many limitations such as Nami wallet, Eternl how to send assets to multiple addresses, mint nft. To solve that problem, the DCOne Team decided to create this tool to provide users with easier manipulation with their own wallet.(Hiện nay có nhiều ví trên nền tảng blockchain cardano nhưng còn nhiều hạn chế chẳng hạn như ví nami, eternl làm sao để gửi tài sản đến nhiều địa chỉ, mint nft.
-                    Để giải quyết vấn đề đó team DCOne quyết định tạo tool này cung cấp cho người dùng dễ thao tác hơn với ví của chính mình.)
-                </Paragraph>
-                <Title>How using?</Title>
-                <Title level={2}><Link href="/" style={{ color: 'black' }}>Send many Nfts, Token</Link></Title>
-                <Paragraph>
-                    - Select menu send multiple
-                </Paragraph>
-                <div style={{ padding: '20px' }}>
-                    <Image
-                        src="/img/token1.jpeg"
-                    />
-                </div>
-                <Paragraph>
-                    - To send to many different addresses called bundle, in bundle you can send ada and many different tokens to the same address you want to send. (Để gửi đến nhiều địa chỉ khác nhau gọi là bundle, trong bundle có thể gửi ada và nhiều token khác nhau cho cùng địa chỉ muốn gửi)
-                </Paragraph>
-                <Paragraph>
-                    - After entering complete information, click submit, will navigate to cardano scan to check in onchain, a transaction on cardano currently takes about 8, 9 seconds, refresh after that time, or check the change of wallet (Sau khi nhập thông tin đầy đủ, bấm vào submit, sẽ điều hướng đến cardano scan để kiểm trong onchain, một giao dịch trên cardano hiện nay khoảng 8, 9s hãy refresh sau khoảng thời gian đó, hoặc kiểm tra sự thay đổi của ví)
-                </Paragraph>
-                <Title level={2}><Link href="/burn" style={{ color: 'black' }}>Mint Nft, Token</Link></Title>
-                <Paragraph>
-                    - Select the mint menu will show a list of the number of nft, the wallet token is holding, you can burn the quantity you want. (Chọn menu mint sẽ ra danh sách số lượng nft, token ví đang giữ, có thể burn số lượng bạn muốn)
-                </Paragraph>
-                <div style={{ padding: '20px' }}>
-                    <Image
-                        src="/img/mint.png"
-                    />
-                </div>
-                <Paragraph>
-                    - Generate more nft, tokens by selecting mint Nfts/Token (Tạo thêm nft, token bằng cách chọn mint Nfts/Token)
-                </Paragraph>
-                <Paragraph>
-                    - Enter necessary information such as name, avatar, quantity, token type (Nhập thông tin cần thiết như tên, avatar, số lượng, loại token)
-                </Paragraph>
-                <Paragraph>
-                    - By default metadata will include our team's information, if you don't like it, you can support us for 1ADA (Mặc định metadata sẽ đính kèm thông tin của team chúng tôi, nếu không thích bạn có thể ủng hộ chúng tôi với phí 1ADA)
-                </Paragraph>
-                <Paragraph>
-                    - After entering complete information, click submit, will navigate to cardano scan to check in onchain, a transaction on cardano now takes about 8, 9 seconds, refresh after that time, or check wallet changes (Sau khi nhập thông tin đầy đủ, bấm vào submit, sẽ điều hướng đến cardano scan để kiểm trong onchain, một giao dịch trên cardano hiện nay khoảng 8, 9s hãy refresh sau khoảng thời gian đó, hoặc kiểm tra sư thay đổi của ví)
-                </Paragraph>
-            </Typography>
+            <Collapse
+                bordered={false}
+                defaultActiveKey={['1']}
+                expandIcon={({ isActive }) => <CaretRightOutlined rotate={isActive ? 90 : 0} />}
+                style={{ background: token.colorBgContainer }}
+                items={getItems(panelStyle)}
+            />
         </>
 
     );

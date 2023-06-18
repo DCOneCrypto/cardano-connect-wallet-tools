@@ -126,7 +126,7 @@ const Mint: NextPageWithLayout = () => {
             ...property
         };
         const asset1: Mint = {
-            assetName: values.name,
+            assetName: values.asset_name,
             assetQuantity: values.quantity.toString(),
             metadata: assetMetadata,
             label: values.type_token,
@@ -235,11 +235,19 @@ const Mint: NextPageWithLayout = () => {
                             initialValues={{ type_token: '721' }}
                         >
                             <Form.Item
-                                name="name"
+                                name="asset_name"
                                 label="Asset Name"
                                 rules={[{ required: true, message: 'Please input your asset name!' }]}
                             >
                                 <Input placeholder="Asset Name *" />
+                            </Form.Item>
+
+                            <Form.Item
+                                name="name"
+                                label="Name"
+                                rules={[{ required: true, message: 'Please input your name!' }]}
+                            >
+                                <Input placeholder="Name *" />
                             </Form.Item>
 
                             <Form.Item name="description" label="Description">
