@@ -8,6 +8,7 @@ import { CaretRightOutlined } from '@ant-design/icons';
 import type { CollapseProps } from 'antd';
 import { Collapse, theme } from 'antd';
 import type { CSSProperties } from 'react';
+import ReactPlayer from 'react-player/youtube'
 
 const text = `{{YOUR IPFS HASH}}`;
 
@@ -23,13 +24,13 @@ const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelSt
     {
         key: '2',
         label: 'How send many Nfts, Token?',
-        children: <p>{text}</p>,
+        children: <ReactPlayer url='https://youtu.be/dfLamXmdsfo' width="inherit"/>,
         style: panelStyle,
     },
     {
         key: '3',
         label: 'How Mint Nft, Token?',
-        children: <p>{text}</p>,
+        children: <ReactPlayer url='https://youtu.be/8iLJBM2NkRA' width="inherit"/>,
         style: panelStyle,
     },
     {
