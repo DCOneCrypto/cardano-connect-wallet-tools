@@ -4,6 +4,7 @@ import { MeshProvider } from "@meshsdk/react";
 import { AppPropsWithLayout } from "@/models";
 import { EmptyLayout } from "components/layout";
 import withTheme from '../theme';
+import { GoogleAnalytics } from "nextjs-google-analytics";
 
 
 export default function App({ Component, pageProps }: AppPropsWithLayout) {
@@ -11,6 +12,7 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
 
   return withTheme(
     <>
+      <GoogleAnalytics/>
       <MeshProvider>
         <Layout>
           <Component {...pageProps} />

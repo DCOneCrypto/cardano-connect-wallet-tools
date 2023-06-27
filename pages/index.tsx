@@ -300,7 +300,7 @@ const Home: NextPageWithLayout = () => {
           tx.sendAssets({ address: recipient.address }, assets);
         }
       }
-      setLoading(false)
+      setLoading(false);
       console.log(tx);
       if (!is_valid) {
         console.log("not found quantity");
@@ -324,7 +324,7 @@ const Home: NextPageWithLayout = () => {
     <>
       <Seo
         data={{
-          title: "Send Multiple Tokens",
+          title: "Send Multiple Tokens, NFT",
           description:
             "Users send multiple ADA addresses, tokens and create your own NFT, Mint, Burn with just a few clicks",
           thumbnailUrl: "/img/dcone_logo.jpg",
@@ -332,156 +332,159 @@ const Home: NextPageWithLayout = () => {
         }}
       />
       <Spin spinning={loading} delay={500}>
-
-      <Space direction="vertical" size={16} style={{ display: "flex" }}>
-        <Title level={2}>Send Multiple Tokens</Title>
-        <AlertUpdateGroup show={!connected} />
-        {inputFields.map((input, index) => {
-          return (
-            <Card
-              key={index}
-              title={`Bundle ${index + 1}`}
-              size="small"
-              extra={
-                inputFields.length > 1 && (
-                  <Tooltip title={`Delete bundle ${index + 1}`}>
-                    <Button
-                      type="text"
-                      danger
-                      icon={<CloseOutlined />}
-                      onClick={() => {
-                        removeFields(index);
-                      }}
-                    />
-                  </Tooltip>
-                )
-              }
-            >
-              <Space direction="vertical" size={16} style={{ display: "flex" }}>
-                <Input
-                  name="address"
-                  placeholder={`Recipient's address ${index + 1}`}
-                  prefix={<UserOutlined className="site-form-item-icon" />}
-                  onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                    handleFormChange(index, event)
-                  }
-                  value={input.address}
-                  suffix={
-                    <Tooltip title={`Address ${index + 1}`}>
-                      <InfoCircleOutlined
-                        style={{ color: "rgba(0,0,0,.45)" }}
+        <Space direction="vertical" size={16} style={{ display: "flex" }}>
+          <Title level={2}>Send Multiple Tokens</Title>
+          <AlertUpdateGroup show={!connected} />
+          {inputFields.map((input, index) => {
+            return (
+              <Card
+                key={index}
+                title={`Bundle ${index + 1}`}
+                size="small"
+                extra={
+                  inputFields.length > 1 && (
+                    <Tooltip title={`Delete bundle ${index + 1}`}>
+                      <Button
+                        type="text"
+                        danger
+                        icon={<CloseOutlined />}
+                        onClick={() => {
+                          removeFields(index);
+                        }}
                       />
                     </Tooltip>
-                  }
-                />
-                <Row gutter={[16, 16]}>
-                  {input.nfts.map((value, key) => (
-                    <Col xs={24} sm={12} md={12} lg={8} xl={6} key={key}>
-                      <Card
-                        size="small"
-                        className="ant-card-box-up"
-                        title={`Total: ${
-                          value.type == "ada"
-                            ? balance.toLocaleString().split(".")[0]
-                            : value.quantity_default
-                        }`}
-                        extra={
-                          input.nfts.length > 1 && (
-                            <Tooltip title="Delete nft">
-                              <Button
-                                type="text"
-                                danger
-                                icon={<CloseOutlined />}
-                                onClick={() => removeNftFields(index, key)}
-                              />
-                            </Tooltip>
-                          )
-                        }
-                      >
-                        <Row justify="space-between">
-                          <Col span={12}>
-                            <Space direction="vertical">
-                              <Button
-                                type="text"
-                                disabled={
-                                  array_assets.length > 0 ? false : true
-                                }
-                                onClick={() => handOpenModal(index, key)}
-                              >
-                                {value.type == "nft"
-                                  ? value.name.substring(0, 7) + "..."
-                                  : "ada"}{" "}
-                                <ArrowRightOutlined />
-                              </Button>
-                              {/* <Text>Total: {value.type == 'ada' ? balance.toLocaleString().split(".")[0] : value.quantity_default}</Text> */}
-                            </Space>
-                          </Col>
-                          <Col span={12}>
-                            <Space direction="vertical">
-                              <Input
-                                type="number"
-                                name="nft"
-                                value={value.balance}
-                                onChange={(value) =>
-                                  handleFormChangeNft(index, value, key)
-                                }
-                              />
-                              {value?.error && (
-                                <Text
-                                  type="danger"
-                                  style={{ fontSize: "10px" }}
-                                >
-                                  Insufficient balance {value?.error}
-                                </Text>
-                              )}
-                            </Space>
-                          </Col>
-                        </Row>
-                      </Card>
-                    </Col>
-                  ))}
-                </Row>
-                {array_assets.length > 0 && (
+                  )
+                }
+              >
+                <Space
+                  direction="vertical"
+                  size={16}
+                  style={{ display: "flex" }}
+                >
+                  <Input
+                    name="address"
+                    placeholder={`Recipient's address ${index + 1}`}
+                    prefix={<UserOutlined className="site-form-item-icon" />}
+                    onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                      handleFormChange(index, event)
+                    }
+                    value={input.address}
+                    suffix={
+                      <Tooltip title={`Address ${index + 1}`}>
+                        <InfoCircleOutlined
+                          style={{ color: "rgba(0,0,0,.45)" }}
+                        />
+                      </Tooltip>
+                    }
+                  />
                   <Row gutter={[16, 16]}>
-                    <Col xs={24} sm={12} md={12} lg={8} xl={6}>
-                      <Button
-                        block
-                        type="primary"
-                        ghost
-                        onClick={() => addNft(index)}
-                      >
-                        Add Token or Nft
-                      </Button>
-                    </Col>
+                    {input.nfts.map((value, key) => (
+                      <Col xs={24} sm={12} md={12} lg={8} xl={6} key={key}>
+                        <Card
+                          size="small"
+                          className="ant-card-box-up"
+                          title={`Total: ${
+                            value.type == "ada"
+                              ? balance.toLocaleString().split(".")[0]
+                              : value.quantity_default
+                          }`}
+                          extra={
+                            input.nfts.length > 1 && (
+                              <Tooltip title="Delete nft">
+                                <Button
+                                  type="text"
+                                  danger
+                                  icon={<CloseOutlined />}
+                                  onClick={() => removeNftFields(index, key)}
+                                />
+                              </Tooltip>
+                            )
+                          }
+                        >
+                          <Row justify="space-between">
+                            <Col span={12}>
+                              <Space direction="vertical">
+                                <Button
+                                  type="text"
+                                  disabled={
+                                    array_assets.length > 0 ? false : true
+                                  }
+                                  onClick={() => handOpenModal(index, key)}
+                                >
+                                  {value.type == "nft"
+                                    ? value.name.substring(0, 7) + "..."
+                                    : "ada"}{" "}
+                                  <ArrowRightOutlined />
+                                </Button>
+                                {/* <Text>Total: {value.type == 'ada' ? balance.toLocaleString().split(".")[0] : value.quantity_default}</Text> */}
+                              </Space>
+                            </Col>
+                            <Col span={12}>
+                              <Space direction="vertical">
+                                <Input
+                                  type="number"
+                                  name="nft"
+                                  value={value.balance}
+                                  onChange={(value) =>
+                                    handleFormChangeNft(index, value, key)
+                                  }
+                                />
+                                {value?.error && (
+                                  <Text
+                                    type="danger"
+                                    style={{ fontSize: "10px" }}
+                                  >
+                                    Insufficient balance {value?.error}
+                                  </Text>
+                                )}
+                              </Space>
+                            </Col>
+                          </Row>
+                        </Card>
+                      </Col>
+                    ))}
                   </Row>
-                )}
-              </Space>
-            </Card>
-          );
-        })}
-        <Button block type="primary" ghost onClick={addFields}>
-          Add Bundle
-        </Button>
-      </Space>
-      <Space style={{ marginTop: "20px" }}>
-        <Button
-          type="primary"
-          onClick={handSubmit}
-          disabled={
-            inputFields.filter((x) => x.address === "").length > 0 ||
-            errorInputBalance ||
-            !connected
-          }
-        >
-          Submit
-        </Button>
-        <Button onClick={handReset}>Reset</Button>
-      </Space>
-      <ModalTokenList
-        open={openModal}
-        handleClose={handCloseModal}
-        assets={array_assets}
-      />
+                  {array_assets.length > 0 && (
+                    <Row gutter={[16, 16]}>
+                      <Col xs={24} sm={12} md={12} lg={8} xl={6}>
+                        <Button
+                          block
+                          type="primary"
+                          ghost
+                          onClick={() => addNft(index)}
+                        >
+                          Add Token or Nft
+                        </Button>
+                      </Col>
+                    </Row>
+                  )}
+                </Space>
+              </Card>
+            );
+          })}
+          <Button block type="primary" ghost onClick={addFields}>
+            Add Bundle
+          </Button>
+        </Space>
+        <Space style={{ marginTop: "20px" }}>
+          <Button
+            type="primary"
+            onClick={handSubmit}
+            disabled={
+              inputFields.filter((x) => x.address === "").length > 0 ||
+              errorInputBalance ||
+              !connected
+            }
+          >
+            Submit
+          </Button>
+          <Button onClick={handReset}>Reset</Button>
+        </Space>
+        <ModalTokenList
+          open={openModal}
+          handleClose={handCloseModal}
+          assets={array_assets}
+        />
       </Spin>
     </>
   );
