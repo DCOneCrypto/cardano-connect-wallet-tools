@@ -23,7 +23,7 @@ export const listMenu = [
       name: "NFTs/Token", link: "/burn", icon: FileImageOutlined
     },
     {
-      name: "Document", link: "/docs", icon: FileTextOutlined
+      name: "How It Work?", link: "/docs", icon: FileTextOutlined
     }
   ]
 
